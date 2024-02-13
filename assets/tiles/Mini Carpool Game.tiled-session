@@ -1,0 +1,306 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "testMap3.tmx",
+    "automapping.whileDrawing": false,
+    "expandedProjectPaths": [
+        ".",
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric"
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Artboard.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 0.5
+        },
+        "Artboard1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 0.25
+        },
+        "Artboard2.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1.5
+        },
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets/Roads_and_tracks_SpriteSheet.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets/cars 2/cop-big-car-76x76.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets/cars 2/roads2W.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric/isometric map.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 719.3333333333333,
+                "y": 506
+            }
+        },
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric/roads2W.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Cars_final.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "NPC1 (2).tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Roads_and_tracks_Sprite1heet.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Roads_and_tracks_SpriteSheet 16.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Roads_and_tracks_SpriteSheet 2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "Roads_and_tracks_SpriteSheet.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "Tilemap32x32_down_environment.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "atok.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "building-red-01.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "car_black_1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "cop-big-car-76x76.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "green car.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "greenMap.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1646.969696969697,
+                "y": 940.9090909090908
+            }
+        },
+        "houses.tsx": {
+            "scaleInDock": 0.125,
+            "scaleInEditor": 0.25
+        },
+        "mm.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "new map.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 608.6666666666667,
+                "y": 398
+            }
+        },
+        "pickup 01a.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0000.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0001.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0005.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0009.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0013.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0017.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0021.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0045.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0049.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0053.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0057.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0061.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0065.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0069.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0073.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "r01_s128_iso_0077.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "road 00.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "road.tmx": {
+            "scale": 0.841640625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 639.8217766638819,
+                "y": 380.8038615056159
+            }
+        },
+        "roadblock.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "roadblock_vertical_anim_52X52.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "roads2W.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "roadtilemap16x16.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
+        "testMap.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 639.5,
+                "y": 384
+            }
+        },
+        "testMap2.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 640.6666666666667,
+                "y": 333.3333333333333
+            }
+        },
+        "testMap3.tmx": {
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 375.5,
+                "y": 156
+            }
+        }
+    },
+    "last.externalTilesetPath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets",
+    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets/Tilemaps & Additive Env",
+    "map.fixedSize": true,
+    "map.height": 12,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": null,
+    "map.orientation": null,
+    "map.renderOrder": null,
+    "map.tileHeight": 32,
+    "map.tileWidth": 32,
+    "map.width": 24,
+    "openFiles": [
+        "cop-big-car-76x76.tsx",
+        "Tilemap32x32_down_environment.tsx",
+        "Roads_and_tracks_SpriteSheet.tsx",
+        "testMap.tmx",
+        "building-red-01.tsx",
+        "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
+        "testMap2.tmx",
+        "testMap3.tmx",
+        "roadtilemap16x16.tsx",
+        "roads2W.tsx",
+        "Roads_and_tracks_SpriteSheet 2.tsx",
+        "roadblock_vertical_anim_52X52.tsx",
+        "roadblock.tsx"
+    ],
+    "project": "Mini Carpool Game.tiled-project",
+    "recentFiles": [
+        "cop-big-car-76x76.tsx",
+        "Tilemap32x32_down_environment.tsx",
+        "Roads_and_tracks_SpriteSheet.tsx",
+        "testMap.tmx",
+        "building-red-01.tsx",
+        "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
+        "testMap2.tmx",
+        "roadblock.tsx",
+        "roadblock_vertical_anim_52X52.tsx",
+        "Roads_and_tracks_SpriteSheet 2.tsx",
+        "roads2W.tsx",
+        "roadtilemap16x16.tsx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 32,
+        "width": 32
+    },
+    "tileset.type": 0
+}

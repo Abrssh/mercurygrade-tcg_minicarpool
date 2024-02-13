@@ -1,5 +1,7 @@
+import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Screens/levelselectionscreen.dart';
+import 'package:mini_carpoolgame/constants.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -23,7 +25,7 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/backGroundImage.jpg"),
+                image: AssetImage(Global.backGroundImageloc),
                 fit: BoxFit.fill)),
         child: Center(
           child: Column(
@@ -51,7 +53,9 @@ class HomeScreen extends StatelessWidget {
                 height: deviceHeight * 0.01,
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Flame.device.setPortrait();
+                  },
                   child: Text(
                     "Change Language",
                     style: TextStyle(

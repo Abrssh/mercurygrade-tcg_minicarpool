@@ -4,6 +4,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/carpoolgame.dart';
+import 'package:mini_carpoolgame/constants.dart';
 
 class GameDetailScreen extends StatefulWidget {
   const GameDetailScreen({super.key});
@@ -50,7 +51,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
         children: [
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Image.asset(
-              "assets/gameExplanationImage.jpg",
+              Global.gameExplanationImageLoc,
               height: deviceHeight * 0.3,
               width: deviceWidth * 0.8,
               fit: BoxFit.fill,

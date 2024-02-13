@@ -29,7 +29,8 @@ class LevelSelectionScreen extends StatelessWidget {
                   (index) => LevelCard(
                       levelName: "Level${index + 1}",
                       levelDetails: "levelDetails ${index + 1}",
-                      imagePath: "assets/level${index + 1}.jpg")),
+                      imagePath:
+                          "assets/images/UI Assets/level${index + 1}.jpg")),
             ),
           ),
         ],
