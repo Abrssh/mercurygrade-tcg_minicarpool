@@ -91,8 +91,18 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        GameWidget(game: CarPoolGame()),
+                                    builder: (context) => GameWidget(
+                                      textDirection: TextDirection.ltr,
+                                      game: CarPoolGame(),
+                                      overlayBuilderMap: {
+                                        'Overlay': (BuildContext context,
+                                            CarPoolGame game) {
+                                          return Container(
+                                            color: Colors.greenAccent,
+                                          );
+                                        },
+                                      },
+                                    ),
                                   ));
                             }
                           : null,

@@ -6,14 +6,18 @@
     "activeFile": "testMap3.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        ".",
-        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric"
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "AnimationSheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
         },
         "Artboard.tsx": {
             "scaleInDock": 0.25,
@@ -27,6 +31,10 @@
         "Artboard2.tsx": {
             "scaleInDock": 0.5,
             "scaleInEditor": 1.5
+        },
+        "Buildings.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 5.5
         },
         "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets/Roads_and_tracks_SpriteSheet.tsx": {
             "dynamicWrapping": true,
@@ -57,6 +65,30 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "Level 2.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 383.5,
+                "y": 192.5
+            }
+        },
+        "Level 3.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 383.5,
+                "y": 192.5
+            }
+        },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -83,6 +115,10 @@
             "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 4
+        },
+        "Sign Attention.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
         },
         "Tilemap32x32_down_environment.tsx": {
             "scaleInDock": 1,
@@ -120,6 +156,14 @@
         "houses.tsx": {
             "scaleInDock": 0.125,
             "scaleInEditor": 0.25
+        },
+        "hydrant 32x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "minitree32x48.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "mm.tsx": {
             "dynamicWrapping": true,
@@ -230,33 +274,42 @@
             "scaleInDock": 3,
             "scaleInEditor": 1
         },
+        "sr2e5c2145371aws3.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 0.33
+        },
         "testMap.tmx": {
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 639.5,
-                "y": 384
+                "x": 636.5,
+                "y": 381
             }
         },
         "testMap2.tmx": {
             "scale": 0.75,
-            "selectedLayer": 3,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 640.6666666666667,
-                "y": 333.3333333333333
+                "x": 616.6666666666667,
+                "y": 386.66666666666663
             }
         },
         "testMap3.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4,
+                6
+            ],
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 375.5,
-                "y": 156
+                "x": 389.5,
+                "y": 182
             }
         }
     },
     "last.externalTilesetPath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets",
-    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets/Tilemaps & Additive Env",
+    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets/Road Signs",
     "map.fixedSize": true,
     "map.height": 12,
     "map.lastUsedFormat": "tmx",
@@ -267,40 +320,30 @@
     "map.tileWidth": 32,
     "map.width": 24,
     "openFiles": [
-        "cop-big-car-76x76.tsx",
-        "Tilemap32x32_down_environment.tsx",
-        "Roads_and_tracks_SpriteSheet.tsx",
-        "testMap.tmx",
-        "building-red-01.tsx",
-        "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
-        "testMap2.tmx",
         "testMap3.tmx",
-        "roadtilemap16x16.tsx",
-        "roads2W.tsx",
-        "Roads_and_tracks_SpriteSheet 2.tsx",
-        "roadblock_vertical_anim_52X52.tsx",
-        "roadblock.tsx"
+        "Level 2.tmx",
+        "Level 3.tmx"
     ],
     "project": "Mini Carpool Game.tiled-project",
     "recentFiles": [
-        "cop-big-car-76x76.tsx",
+        "Level 3.tmx",
+        "Level 2.tmx",
+        "testMap3.tmx",
         "Tilemap32x32_down_environment.tsx",
-        "Roads_and_tracks_SpriteSheet.tsx",
-        "testMap.tmx",
-        "building-red-01.tsx",
+        "Sign Attention.tsx",
+        "minitree32x48.tsx",
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
-        "testMap2.tmx",
-        "roadblock.tsx",
-        "roadblock_vertical_anim_52X52.tsx",
-        "Roads_and_tracks_SpriteSheet 2.tsx",
-        "roads2W.tsx",
-        "roadtilemap16x16.tsx"
+        "hydrant 32x32.tsx",
+        "cop-big-car-76x76.tsx",
+        "sr2e5c2145371aws3.tsx",
+        "testMap.tmx",
+        "roadblock.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 32,
-        "width": 32
+        "width": 13
     },
     "tileset.type": 0
 }

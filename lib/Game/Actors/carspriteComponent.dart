@@ -37,3 +37,21 @@ class CarSpriteComponent extends SpriteComponent {
   //   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
   // }
 }
+
+class FirstPassengerComp extends SpriteComponent {
+  final double speed = 200.0;
+  FirstPassengerComp(double x, double y, Sprite sprite) : super() {
+    this.x = x;
+    this.y = y;
+    this.sprite = sprite;
+  }
+}
+
+class SecondPassengerComp extends SpriteComponent {
+  final double speed = 200.0;
+  SecondPassengerComp(double x, double y, Sprite sprite) : super() {
+    this.x = x;
+    this.y = y;
+    this.sprite = sprite;
+  }
+}

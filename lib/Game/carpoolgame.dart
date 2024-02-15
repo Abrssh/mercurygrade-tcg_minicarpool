@@ -8,96 +8,332 @@ import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/Actors/carspriteComponent.dart';
+import 'package:mini_carpoolgame/Game/OverlayUI/statUI.dart';
+import 'package:mini_carpoolgame/Game/path_finding.dart';
 import 'package:mini_carpoolgame/Screens/homescreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
 
 class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
   late final tm.Timer _timer;
   late final TiledComponent firstLevel;
-  // late final CameraComponent _cameraComponent;
 
-  List<Vector2> touchPoints = [];
+  List<Vector2> touchPoints = [],
+      spawnPointsPassengers = [],
+      destinationSpawnPoints = [];
+  Vector2 playerSpawnPoint = Vector2.zero();
 
-  // bool isFacingright = true, isFacingUp = true;
   late final CarSpriteComponent carSpriteComponent;
+  // determines the next node in the path is reached while final destination
+  // determines if the goal node of the path is reached
+  bool destinationReached = true, finalDestinationReached = true;
+  late Vector2 destination, finalDestination, velocity;
+  // holds all the nodes in the path that will be returned from the path finding method
+  List<Vector2> totalNodesInPath = [];
+  // indicate which node is the current destination
+  int currentNode = 0;
+
+  late final PathFinding pathGraph;
+  final double moveSpeed = 200;
+  final double yAxisSpriteAdjustment = -62;
+  final double xAxisSpriteAdjustment = -30;
+
+  int emissionInGrams = 0, emissionInGramsLimit = 16, time = 0;
+  late final FirstPassengerComp firstPassengerComp;
+  late final SecondPassengerComp secondPassengerComp;
+  bool firstPassengerBoarded = false, secondPassengerBoarded = false;
+  bool firstDestinationArrived = false, secondDestinationArrived = false;
+
+  // UI elements
+  late final StatUIOverlay statUIOverlay;
+  late GameMessageUIOverlay gameMessageUIOverlay;
+  String passengerNum = "0";
 
   @override
   FutureOr<void> onLoad() async {
     _timer = tm.Timer.periodic(
-      const Duration(hours: 1),
-      (timer) {
-        if (_timer.isActive) {
-          _timer.cancel();
-          Flame.device.setPortrait();
-          Navigator.pushReplacement(
-              game.buildContext!,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ));
+      const Duration(seconds: 1),
+      (timer) async {
+        if (firstPassengerBoarded && secondPassengerBoarded) {
+          passengerNum = "2";
+        } else if (firstPassengerBoarded || secondPassengerBoarded) {
+          passengerNum = "1";
+        }
+        statUIOverlay.emissionNum = emissionInGrams.toString();
+        statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
+        statUIOverlay.passengerNum = passengerNum;
+        debugPrint(
+            "Emission: ${emissionInGrams.toString()} Time: ${time.toString()}");
+        debugPrint(
+            "Da: ${firstDestinationArrived.toString()} Sa: ${secondDestinationArrived.toString()} Fp: ${firstPassengerBoarded.toString()} Sp: ${secondPassengerBoarded.toString()}");
+        if (emissionInGrams > emissionInGramsLimit) {
+          debugPrint("Game Over");
+          gameMessageUIOverlay = GameMessageUIOverlay(gameMessage: "Game Over");
+          add(gameMessageUIOverlay);
+          await Future.delayed(
+            const Duration(seconds: 3),
+            () {
+              if (_timer.isActive) {
+                _timer.cancel();
+                Flame.device.setPortrait();
+                Navigator.pushReplacement(
+                    game.buildContext!,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ));
+              }
+            },
+          );
+        } else if (firstDestinationArrived && secondDestinationArrived) {
+          debugPrint("Level Passed");
+          gameMessageUIOverlay =
+              GameMessageUIOverlay(gameMessage: "Level Passed");
+          add(gameMessageUIOverlay);
+          await Future.delayed(
+            const Duration(seconds: 3),
+            () {
+              if (_timer.isActive) {
+                _timer.cancel();
+                Flame.device.setPortrait();
+                Navigator.pushReplacement(
+                    game.buildContext!,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ));
+              }
+            },
+          );
+        } else {
+          time++;
         }
       },
     );
     debugPrint("Game Started");
-    Sprite sprite = await game.loadSprite(Global.carPlayerSprite);
+
+    // Loading Images and Tiles
+    Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
+    Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
+    Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
     await images.loadAllImages();
     debugPrint("Images Loaded: ${images.toString()}");
     firstLevel = await TiledComponent.load("testMap3.tmx", Vector2.all(32));
-    // _cameraComponent =
-    //     CameraComponent.withFixedResolution(width: 768, height: 384);
-    // _cameraComponent.viewfinder.anchor = Anchor.center;
-    final objectLayer =
-        firstLevel.tileMap.getLayer<ObjectGroup>("movement points");
+
+    // Gets allowed movement points for the touch input and spawn points
+    final objectLayer = firstLevel.tileMap.getLayer<ObjectGroup>("mov lay");
+    final spawnLayer = firstLevel.tileMap.getLayer<ObjectGroup>("spawnPoints");
     for (var object in objectLayer!.objects) {
-      debugPrint(
-          "Height: ${object.height} Width: ${object.width} ${Global.carPlayerSprite}");
+      // debugPrint(
+      //     "Height: ${object.height} Width: ${object.width} ${Global.carPlayerSprite}");
       touchPoints.add(Vector2(object.x, object.y));
     }
-    // Sprite sprite = await game.loadSprite(Global.carPlayerSprite);
-    carSpriteComponent =
-        CarSpriteComponent(touchPoints[0].x, touchPoints[0].y, sprite);
-    addAll([firstLevel, carSpriteComponent]);
+    for (var spawnPoint in spawnLayer!.objects) {
+      if (spawnPoint.class_ == "player") {
+        playerSpawnPoint = Vector2(spawnPoint.x, spawnPoint.y);
+      } else if (spawnPoint.class_ == "passenger") {
+        spawnPointsPassengers.add(Vector2(spawnPoint.x, spawnPoint.y));
+      } else {
+        destinationSpawnPoints.add(Vector2(spawnPoint.x, spawnPoint.y));
+      }
+    }
+
+    // creating and spawning car at a specific location
+    carSpriteComponent = CarSpriteComponent(
+        playerSpawnPoint.x + xAxisSpriteAdjustment,
+        playerSpawnPoint.y + yAxisSpriteAdjustment,
+        carSprite);
+    firstPassengerComp = FirstPassengerComp(
+        spawnPointsPassengers[0].x, spawnPointsPassengers[0].y, firPassSpr);
+    secondPassengerComp = SecondPassengerComp(
+        spawnPointsPassengers[1].x, spawnPointsPassengers[1].y, secPassSpr);
+    statUIOverlay = StatUIOverlay(
+        emissionNum: emissionInGrams.toString(),
+        passengerNum: passengerNum,
+        emissionLimit: emissionInGramsLimit.toString());
+    addAll([
+      firstLevel,
+      carSpriteComponent,
+      firstPassengerComp,
+      secondPassengerComp,
+      statUIOverlay,
+    ]);
+
+    // Creating path graph which will be used to implement proper movement
+    pathGraph = PathFinding(16);
+    pathGraph.addEdge(0, 1, 3);
+    pathGraph.addEdge(1, 2, 1);
+    pathGraph.addEdge(2, 3, 2);
+    pathGraph.addEdge(3, 4, 1);
+    pathGraph.addEdge(4, 5, 1);
+    pathGraph.addEdge(5, 6, 1);
+    pathGraph.addEdge(6, 7, 2);
+    pathGraph.addEdge(7, 8, 1);
+    pathGraph.addEdge(8, 9, 1);
+    pathGraph.addEdge(9, 10, 1);
+    pathGraph.addEdge(10, 11, 1);
+    pathGraph.addEdge(11, 12, 2);
+    pathGraph.addEdge(12, 13, 1);
+    pathGraph.addEdge(13, 14, 2);
+    pathGraph.addEdge(14, 15, 1);
     return super.onLoad();
   }
 
-  // @override
-  // void onTapUp(TapUpInfo info) {
-  //   double tapX = info.raw.globalPosition.dx;
-  //   double tapY = info.raw.globalPosition.dy;
-  //   carSpriteComponent.moveTowards(tapX, tapY, 1.0);
-  //   super.onTapUp(info);
-  // }
-
-  // @override
-  // void onTapUp(TapUpInfo info) {
-  //   Vector2 touchposition =
-  //       Vector2(info.raw.globalPosition.dx, info.raw.globalPosition.dy);
-
-  //   for (var touchPoint in touchPoints) {
-  //     if ((touchposition - touchPoint).length < 20) {
-  //       debugPrint("Touch around touchpoints");
-  //       // Update sprite position based on touch
-  //       carSpriteComponent.x = info.eventPosition.global.x - 35;
-  //       carSpriteComponent.y = info.eventPosition.global.y - 35;
-  //       break;
-  //     }
-  //   }
-  //   super.onTapUp(info);
-  // }
+  @override
+  void update(double dt) {
+    // debugPrint(
+    //     "Fd: $finalDestinationReached D: $destinationReached Tn: ${totalNodesInPath.length.toString()} CNode: ${currentNode.toString()}");
+    if (!destinationReached) {
+      moveTowards(dt);
+    } else if (!finalDestinationReached) {
+      currentNode++;
+      destination = Vector2(
+          totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
+      velocity =
+          (destination - carSpriteComponent.position).normalized() * moveSpeed;
+      destinationReached = false;
+    } else {}
+    super.update(dt);
+  }
 
   @override
   void handleTapDown(TapDownDetails details) {
-    Vector2 touchposition =
-        Vector2(details.localPosition.dx, details.localPosition.dy);
+    if (finalDestinationReached) {
+      debugPrint("Touch is allowed ${carSpriteComponent.position.toString()}");
+      Vector2 touchposition =
+          Vector2(details.localPosition.dx, details.localPosition.dy);
 
-    for (var touchPoint in touchPoints) {
-      if ((touchposition - touchPoint).length < 20) {
-        debugPrint("Touch around touchpoints");
-        // Update sprite position based on touch
-        carSpriteComponent.x = details.localPosition.dx - 35;
-        carSpriteComponent.y = details.localPosition.dy - 35;
-        break;
+      int cNode = 0, destinationNode = 0;
+      bool movementPointTouched = false;
+
+      // identifies current node using car position and destination node using touch input
+      for (var touchPoint in touchPoints) {
+        if ((touchposition - touchPoint).length < 20) {
+          debugPrint("Touch around touchpoints");
+          // Update sprite position based on touch
+          // carSpriteComponent.x = details.localPosition.dx - 35;
+          // carSpriteComponent.y = details.localPosition.dy - 35;
+
+          destinationNode = touchPoints.indexOf(touchPoint);
+          movementPointTouched = true;
+          break;
+        }
+      }
+
+      if (movementPointTouched) {
+        for (var touchPoint in touchPoints) {
+          // Accounts for the Yaxis adjustment done in returnBestPath method
+          // for UI purposes
+          Vector2 adjustedTouchPoint = Vector2(
+              touchPoint.x + xAxisSpriteAdjustment,
+              touchPoint.y + yAxisSpriteAdjustment);
+          if ((carSpriteComponent.position.distanceTo(touchPoint) < 10) ||
+              (carSpriteComponent.position.distanceTo(adjustedTouchPoint) <
+                  10)) {
+            cNode = touchPoints.indexOf(touchPoint);
+            debugPrint("CarSprite TouchPoint Found ${cNode.toString()}");
+            break;
+          }
+        }
+
+        // debugPrint("Cn: ${cNode.toString()} ${destinationNode.toString()}");
+        destinationReached = false;
+        finalDestinationReached = false;
+        List<Vector2> nodesReturned = returnTheBestPath(cNode, destinationNode);
+        // debugPrint("Path ${nodesReturned.join(" -> ")}");
+        // debugPrint("TouchPoints ${touchPoints.join(" -> ")}");
+        totalNodesInPath.addAll(nodesReturned);
+        // Adds Emission
+        emissionInGrams += totalNodesInPath.length - 1;
+        destination = Vector2(
+            totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
+        // finalDestination = Vector2(
+        //     touchPoints[destinationNode].x, touchPoints[destinationNode].y);
+        finalDestination = Vector2(
+            totalNodesInPath[totalNodesInPath.length - 1].x,
+            totalNodesInPath[totalNodesInPath.length - 1].y);
+        velocity = (destination - carSpriteComponent.position).normalized() *
+            moveSpeed;
       }
     }
     super.handleTapDown(details);
+  }
+
+  // implments the process of moving the car to the desired location
+  void moveTowards(double dt) {
+    // debugPrint(
+    //     "Car in progress ${destination.toString()} finalDest: ${finalDestination.toString()}");
+    // debugPrint(
+    //     "Cp: ${(carSpriteComponent.position - destination).length.toString()}  Vldt: ${(carSpriteComponent.position.distanceTo(finalDestination)).toString()}");
+    carSpriteComponent.position.x += velocity.x * dt;
+    carSpriteComponent.position.y += velocity.y * dt;
+
+    // Check if the car reached the destination
+    if ((carSpriteComponent.position - destination).length < 10) {
+      carSpriteComponent.x = destination.x;
+      carSpriteComponent.y = destination.y;
+      destinationReached = true;
+
+      // check if you have reached a passenger
+      if (!firstPassengerBoarded || !secondPassengerBoarded) {
+        Vector2 adjustedPos = Vector2(
+            spawnPointsPassengers[0].x + xAxisSpriteAdjustment,
+            spawnPointsPassengers[0].y + yAxisSpriteAdjustment);
+        Vector2 adjustedPos2 = Vector2(
+            spawnPointsPassengers[1].x + xAxisSpriteAdjustment,
+            spawnPointsPassengers[1].y + yAxisSpriteAdjustment);
+        if (carSpriteComponent.position.distanceTo(adjustedPos) < 45) {
+          firstPassengerBoarded = true;
+          firstPassengerComp.makeTransparent();
+        }
+        if (carSpriteComponent.position.distanceTo(adjustedPos2) < 45) {
+          secondPassengerBoarded = true;
+          secondPassengerComp.makeTransparent();
+        }
+      }
+
+      // check if you have reached a destination
+      if (!firstDestinationArrived ||
+          !secondDestinationArrived && firstPassengerBoarded ||
+          secondPassengerBoarded) {
+        Vector2 adjustedPos = Vector2(
+            destinationSpawnPoints[0].x + xAxisSpriteAdjustment,
+            destinationSpawnPoints[0].y + yAxisSpriteAdjustment);
+        Vector2 adjustedPos2 = Vector2(
+            destinationSpawnPoints[1].x + xAxisSpriteAdjustment,
+            destinationSpawnPoints[1].y + yAxisSpriteAdjustment);
+        if ((carSpriteComponent.position.distanceTo(adjustedPos) < 45) &&
+            firstPassengerBoarded) {
+          firstDestinationArrived = true;
+        }
+        if ((carSpriteComponent.position.distanceTo(adjustedPos2) < 45) &&
+            secondPassengerBoarded) {
+          secondDestinationArrived = true;
+        }
+      }
+
+      if ((carSpriteComponent.position.distanceTo(finalDestination) < 10)) {
+        finalDestinationReached = true;
+        totalNodesInPath.clear();
+        currentNode = 0;
+        destinationReached = true;
+        debugPrint('Car reached the final destination.');
+      }
+    }
+  }
+
+  List<Vector2> returnTheBestPath(int startNode, int endNode) {
+    List<Vector2> pathNodes = [];
+    List<int> nodesReturned = [];
+    nodesReturned.addAll(pathGraph.shortestPath(startNode, endNode));
+    for (var nodeReturned in nodesReturned) {
+      Vector2 nodepP =
+          Vector2(touchPoints[nodeReturned].x, touchPoints[nodeReturned].y);
+      nodepP.y += yAxisSpriteAdjustment;
+      nodepP.x += xAxisSpriteAdjustment;
+      // debugPrint(
+      //     "Np: ${nodepP.y.toString()} Tp: ${touchPoints[nodeReturned].y.toString()}");
+      pathNodes.add(nodepP);
+    }
+    debugPrint("Start: ${startNode.toString()} End: ${endNode.toString()}");
+    debugPrint("Short Path: ${nodesReturned.join(" -> ")}");
+    return pathNodes;
   }
 }

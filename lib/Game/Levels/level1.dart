@@ -8,7 +8,7 @@ import 'package:mini_carpoolgame/Game/Actors/carspriteComponent.dart';
 import 'package:mini_carpoolgame/Game/carpoolgame.dart';
 import 'package:mini_carpoolgame/constants.dart';
 
-class Level1 extends World with HasGameRef<CarPoolGame> {
+class Level1 extends World with HasGameRef<CarPoolGame>, TapCallbacks {
   // late final tm.Timer _timer;
   late final TiledComponent firstLevel;
   // late final CameraComponent _cameraComponent;
