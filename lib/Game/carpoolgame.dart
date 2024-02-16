@@ -37,7 +37,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
   final double yAxisSpriteAdjustment = -62;
   final double xAxisSpriteAdjustment = -30;
 
-  int emissionInGrams = 0, emissionInGramsLimit = 16, time = 0;
+  int emissionInGrams = 0, time = 0;
   late final FirstPassengerComp firstPassengerComp;
   late final SecondPassengerComp secondPassengerComp;
   bool firstPassengerBoarded = false, secondPassengerBoarded = false;
@@ -47,6 +47,16 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
   late final StatUIOverlay statUIOverlay;
   late GameMessageUIOverlay gameMessageUIOverlay;
   String passengerNum = "0";
+  bool firstTime = true;
+
+  // Level related variables
+  final String tileName;
+  final int emissionInGramsLimit, level;
+
+  CarPoolGame(
+      {required this.tileName,
+      required this.level,
+      required this.emissionInGramsLimit});
 
   @override
   FutureOr<void> onLoad() async {
@@ -58,6 +68,14 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
         } else if (firstPassengerBoarded || secondPassengerBoarded) {
           passengerNum = "1";
         }
+        if (firstTime) {
+          statUIOverlay = StatUIOverlay(
+              emissionNum: emissionInGrams.toString(),
+              passengerNum: passengerNum,
+              emissionLimit: emissionInGramsLimit.toString());
+          add(statUIOverlay);
+          firstTime = false;
+        }
         statUIOverlay.emissionNum = emissionInGrams.toString();
         statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
         statUIOverlay.passengerNum = passengerNum;
@@ -65,7 +83,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
             "Emission: ${emissionInGrams.toString()} Time: ${time.toString()}");
         debugPrint(
             "Da: ${firstDestinationArrived.toString()} Sa: ${secondDestinationArrived.toString()} Fp: ${firstPassengerBoarded.toString()} Sp: ${secondPassengerBoarded.toString()}");
-        if (emissionInGrams > emissionInGramsLimit) {
+        if (emissionInGrams > emissionInGramsLimit &&
+            (!firstDestinationArrived || !secondDestinationArrived)) {
           debugPrint("Game Over");
           gameMessageUIOverlay = GameMessageUIOverlay(gameMessage: "Game Over");
           add(gameMessageUIOverlay);
@@ -83,7 +102,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
               }
             },
           );
-        } else if (firstDestinationArrived && secondDestinationArrived) {
+        } else if (firstDestinationArrived &&
+            secondDestinationArrived &&
+            emissionInGrams <= emissionInGramsLimit) {
           debugPrint("Level Passed");
           gameMessageUIOverlay =
               GameMessageUIOverlay(gameMessage: "Level Passed");
@@ -114,8 +135,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
     Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
     Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
     await images.loadAllImages();
-    debugPrint("Images Loaded: ${images.toString()}");
-    firstLevel = await TiledComponent.load("testMap3.tmx", Vector2.all(32));
+    debugPrint("Images Loaded: ${images.toString()} $tileName");
+    firstLevel = await TiledComponent.load(tileName, Vector2.all(32));
 
     // Gets allowed movement points for the touch input and spawn points
     final objectLayer = firstLevel.tileMap.getLayer<ObjectGroup>("mov lay");
@@ -144,35 +165,25 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
         spawnPointsPassengers[0].x, spawnPointsPassengers[0].y, firPassSpr);
     secondPassengerComp = SecondPassengerComp(
         spawnPointsPassengers[1].x, spawnPointsPassengers[1].y, secPassSpr);
-    statUIOverlay = StatUIOverlay(
-        emissionNum: emissionInGrams.toString(),
-        passengerNum: passengerNum,
-        emissionLimit: emissionInGramsLimit.toString());
     addAll([
       firstLevel,
       carSpriteComponent,
       firstPassengerComp,
       secondPassengerComp,
-      statUIOverlay,
     ]);
 
     // Creating path graph which will be used to implement proper movement
-    pathGraph = PathFinding(16);
-    pathGraph.addEdge(0, 1, 3);
-    pathGraph.addEdge(1, 2, 1);
-    pathGraph.addEdge(2, 3, 2);
-    pathGraph.addEdge(3, 4, 1);
-    pathGraph.addEdge(4, 5, 1);
-    pathGraph.addEdge(5, 6, 1);
-    pathGraph.addEdge(6, 7, 2);
-    pathGraph.addEdge(7, 8, 1);
-    pathGraph.addEdge(8, 9, 1);
-    pathGraph.addEdge(9, 10, 1);
-    pathGraph.addEdge(10, 11, 1);
-    pathGraph.addEdge(11, 12, 2);
-    pathGraph.addEdge(12, 13, 1);
-    pathGraph.addEdge(13, 14, 2);
-    pathGraph.addEdge(14, 15, 1);
+    switch (level) {
+      case 1:
+        pathGraph = addLevel1PathGraph();
+      case 2:
+        pathGraph = addLevel2PathGraph();
+      case 3:
+        pathGraph = addLevel3PathGraph();
+        break;
+      default:
+    }
+
     return super.onLoad();
   }
 
@@ -335,5 +346,77 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
     debugPrint("Start: ${startNode.toString()} End: ${endNode.toString()}");
     debugPrint("Short Path: ${nodesReturned.join(" -> ")}");
     return pathNodes;
+  }
+
+  PathFinding addLevel1PathGraph() {
+    PathFinding tmPathGraph = PathFinding(16);
+    tmPathGraph.addEdge(0, 1, 3);
+    tmPathGraph.addEdge(1, 2, 1);
+    tmPathGraph.addEdge(2, 3, 2);
+    tmPathGraph.addEdge(3, 4, 1);
+    tmPathGraph.addEdge(4, 5, 1);
+    tmPathGraph.addEdge(5, 6, 1);
+    tmPathGraph.addEdge(6, 7, 2);
+    tmPathGraph.addEdge(7, 8, 1);
+    tmPathGraph.addEdge(8, 9, 1);
+    tmPathGraph.addEdge(9, 10, 1);
+    tmPathGraph.addEdge(10, 11, 1);
+    tmPathGraph.addEdge(11, 12, 2);
+    tmPathGraph.addEdge(12, 13, 1);
+    tmPathGraph.addEdge(13, 14, 2);
+    tmPathGraph.addEdge(14, 15, 1);
+    return tmPathGraph;
+  }
+
+  PathFinding addLevel2PathGraph() {
+    PathFinding tmPathGraph = PathFinding(10);
+    tmPathGraph.addEdge(0, 1, 1);
+    tmPathGraph.addEdge(0, 9, 2);
+    tmPathGraph.addEdge(1, 4, 1);
+    tmPathGraph.addEdge(1, 2, 1);
+    tmPathGraph.addEdge(2, 3, 1);
+    tmPathGraph.addEdge(4, 5, 3);
+    tmPathGraph.addEdge(6, 7, 1);
+    tmPathGraph.addEdge(7, 8, 1);
+    tmPathGraph.addEdge(8, 2, 3);
+    tmPathGraph.addEdge(8, 9, 1);
+    return tmPathGraph;
+  }
+
+  PathFinding addLevel3PathGraph() {
+    PathFinding tmPathGraph = PathFinding(24);
+    tmPathGraph.addEdge(0, 1, 1);
+    tmPathGraph.addEdge(0, 4, 1);
+    tmPathGraph.addEdge(1, 2, 2);
+    tmPathGraph.addEdge(1, 5, 1);
+    tmPathGraph.addEdge(2, 3, 2);
+    tmPathGraph.addEdge(2, 7, 1);
+    tmPathGraph.addEdge(3, 9, 1);
+    tmPathGraph.addEdge(4, 12, 1);
+    tmPathGraph.addEdge(5, 6, 1);
+    tmPathGraph.addEdge(5, 13, 1);
+    tmPathGraph.addEdge(6, 7, 1);
+    tmPathGraph.addEdge(6, 14, 1);
+    tmPathGraph.addEdge(7, 8, 1);
+    tmPathGraph.addEdge(7, 15, 1);
+    tmPathGraph.addEdge(8, 9, 1);
+    tmPathGraph.addEdge(8, 20, 1);
+    tmPathGraph.addEdge(9, 3, 1);
+    tmPathGraph.addEdge(9, 10, 1);
+    tmPathGraph.addEdge(10, 11, 1);
+    tmPathGraph.addEdge(12, 13, 1);
+    tmPathGraph.addEdge(12, 16, 1);
+    tmPathGraph.addEdge(13, 14, 1);
+    tmPathGraph.addEdge(13, 17, 1);
+    tmPathGraph.addEdge(14, 15, 1);
+    tmPathGraph.addEdge(14, 18, 1);
+    tmPathGraph.addEdge(15, 19, 1);
+    tmPathGraph.addEdge(16, 17, 1);
+    tmPathGraph.addEdge(18, 19, 1);
+    tmPathGraph.addEdge(20, 21, 1);
+    tmPathGraph.addEdge(20, 23, 1);
+    tmPathGraph.addEdge(21, 22, 1);
+    tmPathGraph.addEdge(22, 23, 1);
+    return tmPathGraph;
   }
 }

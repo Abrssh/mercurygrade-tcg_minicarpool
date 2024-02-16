@@ -6,8 +6,14 @@ class LevelCard extends StatelessWidget {
   final String levelDetails;
   final String imagePath;
 
+  final String tileName;
+  final int emissionInGramsLimit, level;
+
   const LevelCard(
       {super.key,
+      required this.tileName,
+      required this.emissionInGramsLimit,
+      required this.level,
       required this.levelName,
       required this.levelDetails,
       required this.imagePath});
@@ -63,7 +69,10 @@ class LevelCard extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const GameDetailScreen(),
+                        builder: (context) => GameDetailScreen(
+                            level: level,
+                            emissionInGramsLimit: emissionInGramsLimit,
+                            tileName: tileName),
                       ));
                 },
                 child: Text(

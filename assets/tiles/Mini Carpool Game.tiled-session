@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "testMap3.tmx",
+    "activeFile": "Level 3.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric",
@@ -67,26 +67,26 @@
         },
         "Level 2.tmx": {
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 383.5,
-                "y": 192.5
+                "x": 382.5,
+                "y": 126
             }
         },
         "Level 3.tmx": {
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 1,
-            "selectedLayer": 3,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 383.5,
-                "y": 192.5
+                "x": 381.5,
+                "y": 115
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
@@ -296,20 +296,19 @@
         },
         "testMap3.tmx": {
             "expandedObjectLayers": [
-                3,
                 4,
                 6
             ],
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 389.5,
-                "y": 182
+                "x": 387.5,
+                "y": 179
             }
         }
     },
     "last.externalTilesetPath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets",
-    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets/Road Signs",
+    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets",
     "map.fixedSize": true,
     "map.height": 12,
     "map.lastUsedFormat": "tmx",
@@ -322,28 +321,29 @@
     "openFiles": [
         "testMap3.tmx",
         "Level 2.tmx",
-        "Level 3.tmx"
+        "Level 3.tmx",
+        "Roads_and_tracks_SpriteSheet.tsx"
     ],
     "project": "Mini Carpool Game.tiled-project",
     "recentFiles": [
-        "Level 3.tmx",
-        "Level 2.tmx",
         "testMap3.tmx",
+        "Level 2.tmx",
+        "Roads_and_tracks_SpriteSheet.tsx",
+        "Level 3.tmx",
+        "Roads_and_tracks_SpriteSheet 2.tsx",
+        "roads2W.tsx",
+        "sr2e5c2145371aws3.tsx",
         "Tilemap32x32_down_environment.tsx",
         "Sign Attention.tsx",
         "minitree32x48.tsx",
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
-        "hydrant 32x32.tsx",
-        "cop-big-car-76x76.tsx",
-        "sr2e5c2145371aws3.tsx",
-        "testMap.tmx",
-        "roadblock.tsx"
+        "hydrant 32x32.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 32,
-        "width": 13
+        "width": 32
     },
     "tileset.type": 0
 }

@@ -7,7 +7,13 @@ import 'package:mini_carpoolgame/Game/carpoolgame.dart';
 import 'package:mini_carpoolgame/constants.dart';
 
 class GameDetailScreen extends StatefulWidget {
-  const GameDetailScreen({super.key});
+  final String tileName;
+  final int emissionInGramsLimit, level;
+  const GameDetailScreen(
+      {super.key,
+      required this.emissionInGramsLimit,
+      required this.tileName,
+      required this.level});
 
   @override
   State<GameDetailScreen> createState() => _GameDetailScreenState();
@@ -93,7 +99,11 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => GameWidget(
                                       textDirection: TextDirection.ltr,
-                                      game: CarPoolGame(),
+                                      game: CarPoolGame(
+                                          emissionInGramsLimit:
+                                              widget.emissionInGramsLimit,
+                                          tileName: widget.tileName,
+                                          level: widget.level),
                                       overlayBuilderMap: {
                                         'Overlay': (BuildContext context,
                                             CarPoolGame game) {

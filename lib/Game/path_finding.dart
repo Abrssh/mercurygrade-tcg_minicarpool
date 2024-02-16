@@ -1,4 +1,5 @@
 import 'package:collection/priority_queue.dart';
+import 'package:flutter/material.dart';
 
 class PathFinding {
   // Variables needed to construct the graph
@@ -21,6 +22,32 @@ class PathFinding {
     edgeWeights[u]![v] = weight;
     edgeWeights[v]![u] = weight;
   }
+
+  // List<int> dijkstra(int start, int end) {
+  //   final distances = List<int>.filled(numberOfNodes, 2147483647);
+  //   final visited = List<bool>.filled(numberOfNodes, false);
+  //   final pq = PriorityQueue<int>((a, b) => distances[a] - distances[b]);
+
+  //   debugPrint(distances.join(" -> "));
+
+  //   distances[start] = 0;
+  //   pq.add(start);
+
+  //   while (pq.isNotEmpty) {
+  //     final u = pq.removeFirst();
+  //     if (visited[u]) continue;
+  //     visited[u] = true;
+
+  //     for (var v in adjacencyList[u]!) {
+  //       final newDist = distances[u] + edgeWeights[u]![v]!;
+  //       if (newDist < distances[v]) {
+  //         distances[v] = newDist;
+  //         pq.add(v);
+  //       }
+  //     }
+  //   }
+  //   return distances;
+  // }
 
   List<int> dijkstra(int start, int end) {
     final distances = List<int>.filled(numberOfNodes, 2147483647);
