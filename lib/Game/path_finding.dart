@@ -89,6 +89,19 @@ class PathFinding {
       }
     }
     path.add(start);
+    // debugPrint("SAt: T ${edgeWeights[path[1]]![path[0]].toString()}");
+    // debugPrint("SAt: ${path.reversed.toList().join(" => ")}");
     return path.reversed.toList();
+  }
+
+  // calculate emission based on the path
+  int calculateEmission(List<int> paths) {
+    int emissions = 0;
+    for (var i = 0; i < paths.length - 1; i++) {
+      emissions += edgeWeights[paths[i]]![paths[i + 1]]!;
+    }
+    // debugPrint("CE: ${paths.join(" => ")} pl ${paths.length}");
+    // debugPrint("CE: ${emissions.toString()}");
+    return emissions;
   }
 }

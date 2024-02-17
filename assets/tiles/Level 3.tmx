@@ -35,7 +35,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="mov lay">
+ <objectgroup id="3" name="mov lay" visible="0">
   <object id="1" name="0" x="50" y="52"/>
   <object id="2" name="1" x="147" y="52"/>
   <object id="3" name="2" x="338" y="52"/>
@@ -61,14 +61,14 @@
   <object id="24" name="22" x="528" y="337"/>
   <object id="25" name="23" x="529" y="243"/>
  </objectgroup>
- <objectgroup id="4" name="spawnPoints" visible="0">
+ <objectgroup id="4" name="spawnPoints">
   <object id="26" type="player" x="339" y="244">
    <point/>
   </object>
-  <object id="27" type="passenger" x="435" y="146">
+  <object id="27" type="passenger" x="410" y="122">
    <point/>
   </object>
-  <object id="28" type="passenger" x="147" y="338">
+  <object id="28" type="passenger" x="126" y="323">
    <point/>
   </object>
   <object id="30" type="destination" x="239" y="142">

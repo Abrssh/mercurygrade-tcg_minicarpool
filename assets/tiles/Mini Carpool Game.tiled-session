@@ -67,26 +67,26 @@
         },
         "Level 2.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 382.5,
-                "y": 126
+                "x": 383.5,
+                "y": 192.5
             }
         },
         "Level 3.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 381.5,
-                "y": 115
+                "x": 380.5,
+                "y": 113
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
@@ -296,14 +296,14 @@
         },
         "testMap3.tmx": {
             "expandedObjectLayers": [
-                4,
-                6
+                6,
+                4
             ],
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 387.5,
-                "y": 179
+                "x": 383.5,
+                "y": 191.5
             }
         }
     },

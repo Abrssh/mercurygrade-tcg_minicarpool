@@ -13,7 +13,7 @@ import 'package:mini_carpoolgame/Game/path_finding.dart';
 import 'package:mini_carpoolgame/Screens/homescreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
 
-class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
+class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   late final tm.Timer _timer;
   late final TiledComponent firstLevel;
 
@@ -46,12 +46,23 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
   // UI elements
   late final StatUIOverlay statUIOverlay;
   late GameMessageUIOverlay gameMessageUIOverlay;
-  String passengerNum = "0";
+  String passengerNum = "0", destinationArrivedNum = "0";
   bool firstTime = true;
 
   // Level related variables
   final String tileName;
   final int emissionInGramsLimit, level;
+
+  // Used to recognize double tap and implement revert functionality
+  final Duration _doubleTapThreshold = const Duration(milliseconds: 300);
+  DateTime _lastTapTime = DateTime.now();
+  List<List<int>> revertPoints = [];
+  int currentRevertNum = 0;
+
+  // Passenger movement control
+  bool moveFirstPass = false, moveSecondPass = false;
+  int firstPassBoar = 0, seconPassBoar = 0, firstPassArr = 0, secondPassArr = 0;
+  bool reverse = false;
 
   CarPoolGame(
       {required this.tileName,
@@ -63,26 +74,34 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
     _timer = tm.Timer.periodic(
       const Duration(seconds: 1),
       (timer) async {
+        // debugPrint("CurrentRevNum ${currentRevertNum.toString()}");
         if (firstPassengerBoarded && secondPassengerBoarded) {
           passengerNum = "2";
         } else if (firstPassengerBoarded || secondPassengerBoarded) {
           passengerNum = "1";
+        } else {
+          passengerNum = "0";
+        }
+        if (firstDestinationArrived && secondDestinationArrived) {
+          destinationArrivedNum = "2";
+        } else if (firstDestinationArrived || secondDestinationArrived) {
+          destinationArrivedNum = "1";
+        } else {
+          destinationArrivedNum = "0";
         }
         if (firstTime) {
           statUIOverlay = StatUIOverlay(
+              destinationNum: destinationArrivedNum,
               emissionNum: emissionInGrams.toString(),
               passengerNum: passengerNum,
               emissionLimit: emissionInGramsLimit.toString());
           add(statUIOverlay);
           firstTime = false;
         }
-        statUIOverlay.emissionNum = emissionInGrams.toString();
-        statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
-        statUIOverlay.passengerNum = passengerNum;
-        debugPrint(
-            "Emission: ${emissionInGrams.toString()} Time: ${time.toString()}");
-        debugPrint(
-            "Da: ${firstDestinationArrived.toString()} Sa: ${secondDestinationArrived.toString()} Fp: ${firstPassengerBoarded.toString()} Sp: ${secondPassengerBoarded.toString()}");
+        // debugPrint(
+        //     "Emission: ${emissionInGrams.toString()} Time: ${time.toString()}");
+        // debugPrint(
+        //     "Da: ${firstDestinationArrived.toString()} Sa: ${secondDestinationArrived.toString()} Fp: ${firstPassengerBoarded.toString()} Sp: ${secondPassengerBoarded.toString()}");
         if (emissionInGrams > emissionInGramsLimit &&
             (!firstDestinationArrived || !secondDestinationArrived)) {
           debugPrint("Game Over");
@@ -134,6 +153,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
     Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
     Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
     Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
+
     await images.loadAllImages();
     debugPrint("Images Loaded: ${images.toString()} $tileName");
     firstLevel = await TiledComponent.load(tileName, Vector2.all(32));
@@ -165,6 +185,11 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
         spawnPointsPassengers[0].x, spawnPointsPassengers[0].y, firPassSpr);
     secondPassengerComp = SecondPassengerComp(
         spawnPointsPassengers[1].x, spawnPointsPassengers[1].y, secPassSpr);
+    // increase the size of the passenger
+    firstPassengerComp.width = 50;
+    firstPassengerComp.height = 50;
+    secondPassengerComp.width = 50;
+    secondPassengerComp.height = 50;
     addAll([
       firstLevel,
       carSpriteComponent,
@@ -183,12 +208,15 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
         break;
       default:
     }
-
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
+    // reversePassengerBoarded(1, firstPassengerComp);
+    // debugPrint(
+    //     "Fi: ${firstPassBoar.toString()} ${seconPassBoar.toString()} ${firstPassArr} $secondPassArr");
+    // debugPrint("Df: $firstDestinationArrived $secondDestinationArrived");
     // debugPrint(
     //     "Fd: $finalDestinationReached D: $destinationReached Tn: ${totalNodesInPath.length.toString()} CNode: ${currentNode.toString()}");
     if (!destinationReached) {
@@ -201,15 +229,125 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
           (destination - carSpriteComponent.position).normalized() * moveSpeed;
       destinationReached = false;
     } else {}
+    if (!firstTime) {
+      statUIOverlay.emissionNum = emissionInGrams.toString();
+      statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
+      statUIOverlay.passengerNum = passengerNum;
+      statUIOverlay.destinationNum = destinationArrivedNum;
+    }
+
+    if (firstDestinationArrived && moveFirstPass) {
+      double dirX = 0.0;
+      double dirY = 0.0;
+      dirX -= 20;
+      velocity = Vector2(dirX, dirY);
+      firstPassengerComp.position += velocity * dt;
+    }
+    if (secondDestinationArrived && moveSecondPass) {
+      double dirX = 0.0;
+      double dirY = 0.0;
+      dirX -= 20;
+      velocity = Vector2(dirX, dirY);
+      secondPassengerComp.position += velocity * dt;
+    }
     super.update(dt);
   }
 
+  // @override
+  // void handleTapDown(TapDownDetails details) {
+  //   super.handleTapDown(details);
+  // }
+
+  // implments the process of moving the car to the desired location
+  void moveTowards(double dt) {
+    // debugPrint(
+    //     "Car in progress ${destination.toString()} finalDest: ${finalDestination.toString()}");
+    // debugPrint(
+    //     "Cp: ${(carSpriteComponent.position - destination).length.toString()}  Vldt: ${(carSpriteComponent.position.distanceTo(finalDestination)).toString()}");
+    carSpriteComponent.position.x += velocity.x * dt;
+    carSpriteComponent.position.y += velocity.y * dt;
+
+    // Check if the car reached the destination
+    if ((carSpriteComponent.position - destination).length < 10) {
+      carSpriteComponent.x = destination.x;
+      carSpriteComponent.y = destination.y;
+      destinationReached = true;
+
+      if (!reverse) {
+        // check if you have reached a passenger
+        if (!firstPassengerBoarded || !secondPassengerBoarded) {
+          Vector2 adjustedPos = Vector2(
+              spawnPointsPassengers[0].x + xAxisSpriteAdjustment,
+              spawnPointsPassengers[0].y + yAxisSpriteAdjustment);
+          Vector2 adjustedPos2 = Vector2(
+              spawnPointsPassengers[1].x + xAxisSpriteAdjustment,
+              spawnPointsPassengers[1].y + yAxisSpriteAdjustment);
+          if (carSpriteComponent.position.distanceTo(adjustedPos) < 45) {
+            if (!firstPassengerBoarded) {
+              firstPassBoar = currentRevertNum;
+              firstPassengerBoarded = true;
+              firstPassengerComp.makeTransparent();
+            }
+          }
+          if (carSpriteComponent.position.distanceTo(adjustedPos2) < 45) {
+            if (!secondPassengerBoarded) {
+              secondPassengerBoarded = true;
+              secondPassengerComp.makeTransparent();
+              seconPassBoar = currentRevertNum;
+            }
+          }
+        }
+
+        // check if you have reached a destination
+        if (!firstDestinationArrived ||
+            !secondDestinationArrived && firstPassengerBoarded ||
+            secondPassengerBoarded) {
+          Vector2 adjustedPos = Vector2(
+              destinationSpawnPoints[0].x + xAxisSpriteAdjustment,
+              destinationSpawnPoints[0].y + yAxisSpriteAdjustment);
+          Vector2 adjustedPos2 = Vector2(
+              destinationSpawnPoints[1].x + xAxisSpriteAdjustment,
+              destinationSpawnPoints[1].y + yAxisSpriteAdjustment);
+          if ((carSpriteComponent.position.distanceTo(adjustedPos) < 45) &&
+              firstPassengerBoarded &&
+              !firstDestinationArrived) {
+            firstDestinationArrived = true;
+            firstPassengerComp.position.x = carSpriteComponent.position.x;
+            firstPassengerComp.position.y = carSpriteComponent.position.y;
+            passengerDestinationaction(firstPassengerComp, dt, 1);
+            firstPassArr = currentRevertNum;
+          }
+          if ((carSpriteComponent.position.distanceTo(adjustedPos2) < 45) &&
+              secondPassengerBoarded &&
+              !secondDestinationArrived) {
+            secondDestinationArrived = true;
+            secondPassengerComp.position.x = carSpriteComponent.position.x;
+            secondPassengerComp.position.y = carSpriteComponent.position.y;
+            passengerDestinationaction(secondPassengerComp, dt, 2);
+            secondPassArr = currentRevertNum;
+          }
+        }
+      }
+
+      if ((carSpriteComponent.position.distanceTo(finalDestination) < 10)) {
+        finalDestinationReached = true;
+        totalNodesInPath.clear();
+        currentNode = 0;
+        destinationReached = true;
+        debugPrint('Car reached the final destination.');
+        if (reverse) {
+          reverse = false;
+        }
+      }
+    }
+  }
+
   @override
-  void handleTapDown(TapDownDetails details) {
+  void onTapDown(TapDownEvent event) {
     if (finalDestinationReached) {
-      debugPrint("Touch is allowed ${carSpriteComponent.position.toString()}");
+      // debugPrint("Touch is allowed ${carSpriteComponent.position.toString()}");
       Vector2 touchposition =
-          Vector2(details.localPosition.dx, details.localPosition.dy);
+          Vector2(event.localPosition.x, event.localPosition.y);
 
       int cNode = 0, destinationNode = 0;
       bool movementPointTouched = false;
@@ -247,12 +385,21 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
         // debugPrint("Cn: ${cNode.toString()} ${destinationNode.toString()}");
         destinationReached = false;
         finalDestinationReached = false;
-        List<Vector2> nodesReturned = returnTheBestPath(cNode, destinationNode);
+        // Add revert data
+        List<int> revertData = [destinationNode, cNode];
+        revertPoints.add(revertData);
+        currentRevertNum++;
+        Map<int, dynamic> returnedMap =
+            returnTheBestPath(cNode, destinationNode);
+        // debugPrint("Map: ${revertPoints.toString()}");
+        List<Vector2> nodesReturned = returnedMap[0];
+        emissionInGrams += int.parse(returnedMap[1].toString());
+        // debugPrint("Emission: ${emissionInGrams.toString()} ${returnedMap[1]}");
         // debugPrint("Path ${nodesReturned.join(" -> ")}");
         // debugPrint("TouchPoints ${touchPoints.join(" -> ")}");
         totalNodesInPath.addAll(nodesReturned);
         // Adds Emission
-        emissionInGrams += totalNodesInPath.length - 1;
+        // emissionInGrams += totalNodesInPath.length - 1;
         destination = Vector2(
             totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
         // finalDestination = Vector2(
@@ -264,73 +411,57 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
             moveSpeed;
       }
     }
-    super.handleTapDown(details);
   }
 
-  // implments the process of moving the car to the desired location
-  void moveTowards(double dt) {
-    // debugPrint(
-    //     "Car in progress ${destination.toString()} finalDest: ${finalDestination.toString()}");
-    // debugPrint(
-    //     "Cp: ${(carSpriteComponent.position - destination).length.toString()}  Vldt: ${(carSpriteComponent.position.distanceTo(finalDestination)).toString()}");
-    carSpriteComponent.position.x += velocity.x * dt;
-    carSpriteComponent.position.y += velocity.y * dt;
-
-    // Check if the car reached the destination
-    if ((carSpriteComponent.position - destination).length < 10) {
-      carSpriteComponent.x = destination.x;
-      carSpriteComponent.y = destination.y;
-      destinationReached = true;
-
-      // check if you have reached a passenger
-      if (!firstPassengerBoarded || !secondPassengerBoarded) {
-        Vector2 adjustedPos = Vector2(
-            spawnPointsPassengers[0].x + xAxisSpriteAdjustment,
-            spawnPointsPassengers[0].y + yAxisSpriteAdjustment);
-        Vector2 adjustedPos2 = Vector2(
-            spawnPointsPassengers[1].x + xAxisSpriteAdjustment,
-            spawnPointsPassengers[1].y + yAxisSpriteAdjustment);
-        if (carSpriteComponent.position.distanceTo(adjustedPos) < 45) {
-          firstPassengerBoarded = true;
-          firstPassengerComp.makeTransparent();
+  // Check for double tap
+  // Used to revert one step
+  @override
+  void onTapUp(TapUpEvent event) {
+    final currentTime = DateTime.now();
+    if (currentTime.difference(_lastTapTime) < _doubleTapThreshold) {
+      if (currentRevertNum > 0) {
+        if (currentRevertNum == firstPassBoar) {
+          reversePassengerBoarded(1);
+          firstPassBoar = 0;
         }
-        if (carSpriteComponent.position.distanceTo(adjustedPos2) < 45) {
-          secondPassengerBoarded = true;
-          secondPassengerComp.makeTransparent();
+        if (currentRevertNum == seconPassBoar) {
+          reversePassengerBoarded(2);
+          seconPassBoar = 0;
         }
-      }
+        if (currentRevertNum == firstPassArr) {
+          reversePassengerGotToDestination(1);
+          firstPassArr = 0;
+        }
+        if (currentRevertNum == secondPassArr) {
+          reversePassengerGotToDestination(2);
+          secondPassArr = 0;
+        }
+        --currentRevertNum;
+        reverse = true;
+        destinationReached = false;
+        finalDestinationReached = false;
+        Map<int, dynamic> returnedMap = returnTheBestPath(
+            revertPoints[currentRevertNum][0],
+            revertPoints[currentRevertNum][1]);
+        List<Vector2> nodesReturned = returnedMap[0];
+        emissionInGrams -= int.parse(returnedMap[1].toString());
+        totalNodesInPath.addAll(nodesReturned);
+        destination = Vector2(
+            totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
 
-      // check if you have reached a destination
-      if (!firstDestinationArrived ||
-          !secondDestinationArrived && firstPassengerBoarded ||
-          secondPassengerBoarded) {
-        Vector2 adjustedPos = Vector2(
-            destinationSpawnPoints[0].x + xAxisSpriteAdjustment,
-            destinationSpawnPoints[0].y + yAxisSpriteAdjustment);
-        Vector2 adjustedPos2 = Vector2(
-            destinationSpawnPoints[1].x + xAxisSpriteAdjustment,
-            destinationSpawnPoints[1].y + yAxisSpriteAdjustment);
-        if ((carSpriteComponent.position.distanceTo(adjustedPos) < 45) &&
-            firstPassengerBoarded) {
-          firstDestinationArrived = true;
-        }
-        if ((carSpriteComponent.position.distanceTo(adjustedPos2) < 45) &&
-            secondPassengerBoarded) {
-          secondDestinationArrived = true;
-        }
-      }
-
-      if ((carSpriteComponent.position.distanceTo(finalDestination) < 10)) {
-        finalDestinationReached = true;
-        totalNodesInPath.clear();
-        currentNode = 0;
-        destinationReached = true;
-        debugPrint('Car reached the final destination.');
+        finalDestination = Vector2(
+            totalNodesInPath[totalNodesInPath.length - 1].x,
+            totalNodesInPath[totalNodesInPath.length - 1].y);
+        velocity = (destination - carSpriteComponent.position).normalized() *
+            moveSpeed;
+        revertPoints.removeLast();
       }
     }
+    _lastTapTime = currentTime;
   }
 
-  List<Vector2> returnTheBestPath(int startNode, int endNode) {
+  Map<int, dynamic> returnTheBestPath(int startNode, int endNode) {
+    Map<int, dynamic> returnMap = {};
     List<Vector2> pathNodes = [];
     List<int> nodesReturned = [];
     nodesReturned.addAll(pathGraph.shortestPath(startNode, endNode));
@@ -343,9 +474,11 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
       //     "Np: ${nodepP.y.toString()} Tp: ${touchPoints[nodeReturned].y.toString()}");
       pathNodes.add(nodepP);
     }
+    returnMap[0] = pathNodes;
+    returnMap[1] = pathGraph.calculateEmission(nodesReturned);
     debugPrint("Start: ${startNode.toString()} End: ${endNode.toString()}");
     debugPrint("Short Path: ${nodesReturned.join(" -> ")}");
-    return pathNodes;
+    return returnMap;
   }
 
   PathFinding addLevel1PathGraph() {
@@ -418,5 +551,58 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapDetector {
     tmPathGraph.addEdge(21, 22, 1);
     tmPathGraph.addEdge(22, 23, 1);
     return tmPathGraph;
+  }
+
+  void passengerDestinationaction(
+      SpriteComponent spriteComponent, double dt, int passType) {
+    debugPrint("Called ");
+    spriteComponent.makeOpaque();
+    switch (passType) {
+      case 1:
+        moveFirstPass = true;
+      case 2:
+        moveSecondPass = true;
+        break;
+      default:
+    }
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      debugPrint("Sprite Disappeared");
+      spriteComponent.makeTransparent();
+      switch (passType) {
+        case 1:
+          moveFirstPass = false;
+        case 2:
+          moveSecondPass = false;
+          break;
+        default:
+      }
+    });
+  }
+
+  void reversePassengerBoarded(int passType) {
+    switch (passType) {
+      case 1:
+        firstPassengerBoarded = false;
+        firstPassengerComp.position.x = spawnPointsPassengers[0].x;
+        firstPassengerComp.position.y = spawnPointsPassengers[0].y;
+        firstPassengerComp.makeOpaque();
+      case 2:
+        secondPassengerBoarded = false;
+        secondPassengerComp.position.x = spawnPointsPassengers[1].x;
+        secondPassengerComp.position.y = spawnPointsPassengers[1].y;
+        secondPassengerComp.makeOpaque();
+      default:
+    }
+  }
+
+  void reversePassengerGotToDestination(int passType) {
+    switch (passType) {
+      case 1:
+        firstDestinationArrived = false;
+      case 2:
+        secondDestinationArrived = false;
+        break;
+      default:
+    }
   }
 }
