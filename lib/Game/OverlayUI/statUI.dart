@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/carpoolgame.dart';
 
 class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
-  String emissionNum, emissionLimit, passengerNum, destinationNum;
+  String emissionNum, emissionLimit, passengerNum, destinationNum, time;
 
   StatUIOverlay(
       {required this.emissionNum,
       required this.passengerNum,
       required this.destinationNum,
+      required this.time,
       required this.emissionLimit});
 
   @override
@@ -17,6 +18,8 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
     const textstyle = TextStyle(
         color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold);
     const textstyle2 = TextStyle(
+        color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300);
+    const textstyle3 = TextStyle(
         color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300);
     final firstPosition = Vector2(10, 10);
     TextPainter(
@@ -36,7 +39,7 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
         textDirection: TextDirection.ltr)
       ..layout()
       ..paint(canvas, secondPosition.toOffset());
-    final thirdPosition = Vector2(game.size.x - 450, 10);
+    final thirdPosition = Vector2(game.size.x - 430, 10);
     TextPainter(
         text: TextSpan(
           text: "Dropped Off: $destinationNum / 2",
@@ -45,6 +48,15 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
         textDirection: TextDirection.ltr)
       ..layout()
       ..paint(canvas, thirdPosition.toOffset());
+    final fourthPosition = Vector2(game.size.x - 540, 10);
+    TextPainter(
+        text: TextSpan(
+          text: "Time: $time",
+          style: textstyle3,
+        ),
+        textDirection: TextDirection.ltr)
+      ..layout()
+      ..paint(canvas, fourthPosition.toOffset());
     // TextComponent passengerDropped = TextComponent(
     //     text: "Dropped Off: $destinationNum / 2",
     //     anchor: Anchor.topRight,
@@ -57,20 +69,44 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
 
 class GameMessageUIOverlay extends Component with HasGameRef<CarPoolGame> {
   String gameMessage;
+  double time;
+  bool success = false;
 
-  GameMessageUIOverlay({required this.gameMessage});
+  GameMessageUIOverlay(
+      {required this.gameMessage, required this.time, required this.success});
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    const textstyle = TextStyle(
-        color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold);
-    final screenSize = Vector2(game.size.x / 2, game.size.y / 2);
+    TextStyle textstyle = TextStyle(
+        color: success ? Colors.greenAccent : Colors.white,
+        fontSize: success ? 27 : 34,
+        fontWeight: success ? FontWeight.bold : FontWeight.bold);
+    TextStyle textstyle2 = TextStyle(
+        color: success ? Colors.white : Colors.red,
+        fontSize: success ? 27 : 20,
+        fontWeight: success ? FontWeight.bold : FontWeight.bold);
+    // final screenSize = Vector2(game.size.x / 2, game.size.y / 2);
+    final screenSize = Vector2(game.size.x / 2 - 180, game.size.y / 2 - 30);
+    final screenSize2 = Vector2(game.size.x / 2 - 140, game.size.y / 2 + 10);
+    final screenSize3 = Vector2(game.size.x / 2 - 120, game.size.y / 2 - 20);
+    final screenSize4 = Vector2(game.size.x / 2 - 190, game.size.y / 2 + 25);
     // final centerTextPosition = ;
     TextPainter(
-        text: TextSpan(text: gameMessage, style: textstyle),
+        text: TextSpan(
+            text: success ? gameMessage : "Game Over", style: textstyle),
         textDirection: TextDirection.ltr)
       ..layout()
-      ..paint(canvas, screenSize.toOffset());
+      ..paint(canvas, success ? screenSize.toOffset() : screenSize3.toOffset());
+    TextPainter(
+        text: TextSpan(
+            text: success
+                ? "Score: ${(100 / time).toDouble().floor().toString()}"
+                : gameMessage,
+            style: textstyle2),
+        textDirection: TextDirection.ltr)
+      ..layout()
+      ..paint(
+          canvas, success ? screenSize2.toOffset() : screenSize4.toOffset());
   }
 }

@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/Actors/carspriteComponent.dart';
@@ -64,6 +65,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   int firstPassBoar = 0, seconPassBoar = 0, firstPassArr = 0, secondPassArr = 0;
   bool reverse = false;
 
+  // Button
+  late SpriteButtonComponent nextLevel, upgradeCar, exitButton;
+
   CarPoolGame(
       {required this.tileName,
       required this.level,
@@ -94,7 +98,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
               destinationNum: destinationArrivedNum,
               emissionNum: emissionInGrams.toString(),
               passengerNum: passengerNum,
-              emissionLimit: emissionInGramsLimit.toString());
+              emissionLimit: emissionInGramsLimit.toString(),
+              time: time.toString());
           add(statUIOverlay);
           firstTime = false;
         }
@@ -105,19 +110,47 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         if (emissionInGrams > emissionInGramsLimit &&
             (!firstDestinationArrived || !secondDestinationArrived)) {
           debugPrint("Game Over");
-          gameMessageUIOverlay = GameMessageUIOverlay(gameMessage: "Game Over");
+          gameMessageUIOverlay = GameMessageUIOverlay(
+              gameMessage: "You went over the Carbon Limit set",
+              time: time.toDouble(),
+              success: false);
           add(gameMessageUIOverlay);
           await Future.delayed(
             const Duration(seconds: 3),
             () {
               if (_timer.isActive) {
                 _timer.cancel();
-                Flame.device.setPortrait();
                 Navigator.pushReplacement(
-                    game.buildContext!,
+                    buildContext!,
                     MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => GameWidget(
+                        textDirection: TextDirection.ltr,
+                        game: CarPoolGame(
+                            emissionInGramsLimit: emissionInGramsLimit,
+                            tileName: tileName,
+                            level: level),
+                        overlayBuilderMap: {
+                          'Overlay': (BuildContext context, CarPoolGame game) {
+                            return Container(
+                              color: Colors.greenAccent,
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {},
+                                      child: const Icon(Icons.play_arrow))
+                                ],
+                              ),
+                            );
+                          },
+                        },
+                      ),
                     ));
+                // Flame.device.setPortrait();
+                // Navigator.pushReplacement(
+                //     game.buildContext!,
+                //     MaterialPageRoute(
+                //       builder: (context) => const HomeScreen(),
+                //     ));
               }
             },
           );
@@ -125,8 +158,10 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             secondDestinationArrived &&
             emissionInGrams <= emissionInGramsLimit) {
           debugPrint("Level Passed");
-          gameMessageUIOverlay =
-              GameMessageUIOverlay(gameMessage: "Level Passed");
+          gameMessageUIOverlay = GameMessageUIOverlay(
+              gameMessage: "Sustainability Goal Achieved",
+              time: time.toDouble(),
+              success: true);
           add(gameMessageUIOverlay);
           await Future.delayed(
             const Duration(seconds: 3),
@@ -208,6 +243,37 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         break;
       default:
     }
+
+    // Creating a sprite button
+    Sprite nextLevelImage = await game.loadSprite(Global.nextLevelButtonImage);
+    Sprite upgradeImage = await game.loadSprite(Global.upgradeButtonImage);
+    Sprite gotoHome = await game.loadSprite(Global.goToHomeImage);
+
+    nextLevel = SpriteButtonComponent(
+      button: nextLevelImage,
+      position: Vector2(400, 250),
+      size: Vector2(50, 50),
+      onPressed: () {
+        debugPrint("Next level Pressed");
+      },
+    );
+    upgradeCar = SpriteButtonComponent(
+      button: upgradeImage,
+      position: Vector2(300, 250),
+      size: Vector2(50, 50),
+      onPressed: () {
+        debugPrint("Upgrade Car Pressed");
+      },
+    );
+    exitButton = SpriteButtonComponent(
+      button: gotoHome,
+      position: Vector2(700, 320),
+      size: Vector2(50, 50),
+      onPressed: () {
+        debugPrint("Exit Button Pressed");
+      },
+    );
+    addAll([nextLevel, upgradeCar, exitButton]);
     return super.onLoad();
   }
 
@@ -234,21 +300,24 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
       statUIOverlay.passengerNum = passengerNum;
       statUIOverlay.destinationNum = destinationArrivedNum;
+      statUIOverlay.time = time.toString();
     }
 
     if (firstDestinationArrived && moveFirstPass) {
+      Vector2 newVelocity;
       double dirX = 0.0;
       double dirY = 0.0;
       dirX -= 20;
-      velocity = Vector2(dirX, dirY);
-      firstPassengerComp.position += velocity * dt;
+      newVelocity = Vector2(dirX, dirY);
+      firstPassengerComp.position += newVelocity * dt;
     }
     if (secondDestinationArrived && moveSecondPass) {
+      Vector2 newVelocity;
       double dirX = 0.0;
       double dirY = 0.0;
       dirX -= 20;
-      velocity = Vector2(dirX, dirY);
-      secondPassengerComp.position += velocity * dt;
+      newVelocity = Vector2(dirX, dirY);
+      secondPassengerComp.position += newVelocity * dt;
     }
     super.update(dt);
   }
@@ -419,42 +488,44 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   void onTapUp(TapUpEvent event) {
     final currentTime = DateTime.now();
     if (currentTime.difference(_lastTapTime) < _doubleTapThreshold) {
-      if (currentRevertNum > 0) {
-        if (currentRevertNum == firstPassBoar) {
-          reversePassengerBoarded(1);
-          firstPassBoar = 0;
-        }
-        if (currentRevertNum == seconPassBoar) {
-          reversePassengerBoarded(2);
-          seconPassBoar = 0;
-        }
-        if (currentRevertNum == firstPassArr) {
-          reversePassengerGotToDestination(1);
-          firstPassArr = 0;
-        }
-        if (currentRevertNum == secondPassArr) {
-          reversePassengerGotToDestination(2);
-          secondPassArr = 0;
-        }
-        --currentRevertNum;
-        reverse = true;
-        destinationReached = false;
-        finalDestinationReached = false;
-        Map<int, dynamic> returnedMap = returnTheBestPath(
-            revertPoints[currentRevertNum][0],
-            revertPoints[currentRevertNum][1]);
-        List<Vector2> nodesReturned = returnedMap[0];
-        emissionInGrams -= int.parse(returnedMap[1].toString());
-        totalNodesInPath.addAll(nodesReturned);
-        destination = Vector2(
-            totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
+      if (finalDestinationReached) {
+        if (currentRevertNum > 0) {
+          if (currentRevertNum == firstPassBoar) {
+            reversePassengerBoarded(1);
+            firstPassBoar = 0;
+          }
+          if (currentRevertNum == seconPassBoar) {
+            reversePassengerBoarded(2);
+            seconPassBoar = 0;
+          }
+          if (currentRevertNum == firstPassArr) {
+            reversePassengerGotToDestination(1);
+            firstPassArr = 0;
+          }
+          if (currentRevertNum == secondPassArr) {
+            reversePassengerGotToDestination(2);
+            secondPassArr = 0;
+          }
+          --currentRevertNum;
+          reverse = true;
+          destinationReached = false;
+          finalDestinationReached = false;
+          Map<int, dynamic> returnedMap = returnTheBestPath(
+              revertPoints[currentRevertNum][0],
+              revertPoints[currentRevertNum][1]);
+          List<Vector2> nodesReturned = returnedMap[0];
+          emissionInGrams -= int.parse(returnedMap[1].toString());
+          totalNodesInPath.addAll(nodesReturned);
+          destination = Vector2(
+              totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
 
-        finalDestination = Vector2(
-            totalNodesInPath[totalNodesInPath.length - 1].x,
-            totalNodesInPath[totalNodesInPath.length - 1].y);
-        velocity = (destination - carSpriteComponent.position).normalized() *
-            moveSpeed;
-        revertPoints.removeLast();
+          finalDestination = Vector2(
+              totalNodesInPath[totalNodesInPath.length - 1].x,
+              totalNodesInPath[totalNodesInPath.length - 1].y);
+          velocity = (destination - carSpriteComponent.position).normalized() *
+              moveSpeed;
+          revertPoints.removeLast();
+        }
       }
     }
     _lastTapTime = currentTime;

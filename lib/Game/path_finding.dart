@@ -1,5 +1,4 @@
 import 'package:collection/priority_queue.dart';
-import 'package:flutter/material.dart';
 
 class PathFinding {
   // Variables needed to construct the graph

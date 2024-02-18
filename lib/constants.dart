@@ -11,4 +11,8 @@ class Global {
       "gameAssets/Tilemaps & Additive Env/hydrant 32x32.png";
   static const String passenger2Sprite =
       "gameAssets/Road Signs/Sign Attention.png";
+  static const String nextLevelButtonImage = "gameAssets/Default@3x.png";
+  static const String upgradeButtonImage = "gameAssets/Hover@3x.png";
+  // static const String goToHomeImage = "gameAssets/Locker@3x.png";
+  static const String goToHomeImage = "gameAssets/LevelsDefault@3x.png";
 }
