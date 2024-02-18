@@ -2,10 +2,17 @@ import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Screens/levelselectionscreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mini_carpoolgame/main.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
@@ -14,7 +21,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Game App"),
+        title: Text(AppLocalizations.of(context)!.miniCarpool),
         leading: IconButton(
             onPressed: () {}, icon: const Icon(Icons.account_circle)),
         centerTitle: true,
@@ -43,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 20)),
                 child: Text(
-                  "Start Game",
+                  AppLocalizations.of(context)!.startGame,
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: deviceWidth * 0.10),
@@ -52,17 +59,21 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: deviceHeight * 0.01,
               ),
-              TextButton(
+              ElevatedButton(
                   onPressed: () {
-                    Flame.device.setPortrait();
+                    setState(() {
+                      Flame.device.setPortrait();
+                      MyApp.setLocale(context);
+                      // debugPrint("Change Lang");
+                    });
                   },
                   child: Text(
-                    "Change Language",
+                    // "Change Language",
+                    AppLocalizations.of(context)!.changeLanguage,
                     style: TextStyle(
-                        color: Colors.white,
                         fontWeight: FontWeight.w400,
                         fontSize: deviceWidth * 0.06),
-                  ))
+                  )),
             ],
           ),
         ),

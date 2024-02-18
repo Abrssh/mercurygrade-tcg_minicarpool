@@ -13,6 +13,7 @@ import 'package:mini_carpoolgame/Game/OverlayUI/statUI.dart';
 import 'package:mini_carpoolgame/Game/path_finding.dart';
 import 'package:mini_carpoolgame/Screens/homescreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   late final tm.Timer _timer;
@@ -93,15 +94,19 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         } else {
           destinationArrivedNum = "0";
         }
+
         if (firstTime) {
-          statUIOverlay = StatUIOverlay(
-              destinationNum: destinationArrivedNum,
-              emissionNum: emissionInGrams.toString(),
-              passengerNum: passengerNum,
-              emissionLimit: emissionInGramsLimit.toString(),
-              time: time.toString());
-          add(statUIOverlay);
-          firstTime = false;
+          if (buildContext != null) {
+            statUIOverlay = StatUIOverlay(
+                buildContext: buildContext!,
+                destinationNum: destinationArrivedNum,
+                emissionNum: emissionInGrams.toString(),
+                passengerNum: passengerNum,
+                emissionLimit: emissionInGramsLimit.toString(),
+                time: time.toString());
+            add(statUIOverlay);
+            firstTime = false;
+          }
         }
         // debugPrint(
         //     "Emission: ${emissionInGrams.toString()} Time: ${time.toString()}");
@@ -111,7 +116,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             (!firstDestinationArrived || !secondDestinationArrived)) {
           debugPrint("Game Over");
           gameMessageUIOverlay = GameMessageUIOverlay(
-              gameMessage: "You went over the Carbon Limit set",
+              buildContext: buildContext!,
+              gameMessage:
+                  AppLocalizations.of(buildContext!)!.youWentOverCarbon,
               time: time.toDouble(),
               success: false);
           add(gameMessageUIOverlay);
@@ -159,7 +166,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             emissionInGrams <= emissionInGramsLimit) {
           debugPrint("Level Passed");
           gameMessageUIOverlay = GameMessageUIOverlay(
-              gameMessage: "Sustainability Goal Achieved",
+              buildContext: buildContext!,
+              gameMessage: AppLocalizations.of(buildContext!)!
+                  .sustainabilityGoalAchieved,
               time: time.toDouble(),
               success: true);
           add(gameMessageUIOverlay);

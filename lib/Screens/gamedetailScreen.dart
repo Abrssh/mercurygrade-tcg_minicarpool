@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/carpoolgame.dart';
 import 'package:mini_carpoolgame/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameDetailScreen extends StatefulWidget {
   final String tileName;
@@ -49,7 +50,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Game Details"),
+        title: Text(AppLocalizations.of(context)!.gameDetails),
         centerTitle: true,
       ),
       body: Row(
@@ -68,7 +69,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    "Detailed Explanation",
+                    AppLocalizations.of(context)!.detailedExplanation,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: deviceWidth * 0.08),
@@ -80,7 +81,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                     height: deviceHeight * 0.3,
                     width: deviceWidth * 0.8,
                     child: Text(
-                      "We will put detailed explanations here. We will put detailed explanations here. We will put detailed explanations here.",
+                      AppLocalizations.of(context)!.detailedExplanationtext,
                       style: TextStyle(
                           fontWeight: FontWeight.w100,
                           fontSize: deviceWidth * 0.05),
@@ -117,7 +118,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                             }
                           : null,
                       child: Text(
-                        "Play",
+                        AppLocalizations.of(context)!.play,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: deviceWidth * 0.1),

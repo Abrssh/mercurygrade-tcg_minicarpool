@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Screens/gamedetailScreen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LevelCard extends StatelessWidget {
   final String levelName;
@@ -76,7 +77,7 @@ class LevelCard extends StatelessWidget {
                       ));
                 },
                 child: Text(
-                  "Play",
+                  AppLocalizations.of(context)!.play,
                   style: TextStyle(
                     fontWeight: FontWeight.w200,
                     fontSize: deviceWidth * 0.15,

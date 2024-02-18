@@ -1,15 +1,18 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/carpoolgame.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
   String emissionNum, emissionLimit, passengerNum, destinationNum, time;
+  BuildContext buildContext;
 
   StatUIOverlay(
       {required this.emissionNum,
       required this.passengerNum,
       required this.destinationNum,
       required this.time,
+      required this.buildContext,
       required this.emissionLimit});
 
   @override
@@ -24,7 +27,8 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
     final firstPosition = Vector2(10, 10);
     TextPainter(
         text: TextSpan(
-          text: "Emission: $emissionNum / $emissionLimit (g)",
+          text:
+              "${AppLocalizations.of(buildContext)!.emission}: $emissionNum / $emissionLimit (g)",
           style: textstyle,
         ),
         textDirection: TextDirection.ltr)
@@ -33,7 +37,8 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
     final secondPosition = Vector2(game.size.x - 230, 10);
     TextPainter(
         text: TextSpan(
-          text: "Passenger: $passengerNum / 2",
+          text:
+              "${AppLocalizations.of(buildContext)!.passenger}: $passengerNum / 2",
           style: textstyle2,
         ),
         textDirection: TextDirection.ltr)
@@ -42,7 +47,8 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
     final thirdPosition = Vector2(game.size.x - 430, 10);
     TextPainter(
         text: TextSpan(
-          text: "Dropped Off: $destinationNum / 2",
+          text:
+              "${AppLocalizations.of(buildContext)!.droppedOff}: $destinationNum / 2",
           style: textstyle2,
         ),
         textDirection: TextDirection.ltr)
@@ -51,7 +57,7 @@ class StatUIOverlay extends Component with HasGameRef<CarPoolGame> {
     final fourthPosition = Vector2(game.size.x - 540, 10);
     TextPainter(
         text: TextSpan(
-          text: "Time: $time",
+          text: "${AppLocalizations.of(buildContext)!.time}: $time",
           style: textstyle3,
         ),
         textDirection: TextDirection.ltr)
@@ -71,9 +77,13 @@ class GameMessageUIOverlay extends Component with HasGameRef<CarPoolGame> {
   String gameMessage;
   double time;
   bool success = false;
+  BuildContext buildContext;
 
   GameMessageUIOverlay(
-      {required this.gameMessage, required this.time, required this.success});
+      {required this.gameMessage,
+      required this.time,
+      required this.success,
+      required this.buildContext});
 
   @override
   void render(Canvas canvas) {
@@ -94,14 +104,18 @@ class GameMessageUIOverlay extends Component with HasGameRef<CarPoolGame> {
     // final centerTextPosition = ;
     TextPainter(
         text: TextSpan(
-            text: success ? gameMessage : "Game Over", style: textstyle),
+            text: success
+                ? gameMessage
+                : AppLocalizations.of(buildContext)!.gameOver,
+            // : "Game Over",
+            style: textstyle),
         textDirection: TextDirection.ltr)
       ..layout()
       ..paint(canvas, success ? screenSize.toOffset() : screenSize3.toOffset());
     TextPainter(
         text: TextSpan(
             text: success
-                ? "Score: ${(100 / time).toDouble().floor().toString()}"
+                ? "${AppLocalizations.of(buildContext)!.score}: ${(100 / time).toDouble().floor().toString()}"
                 : gameMessage,
             style: textstyle2),
         textDirection: TextDirection.ltr)
