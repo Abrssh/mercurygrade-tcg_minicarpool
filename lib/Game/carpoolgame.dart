@@ -68,6 +68,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
 
   // Button
   late SpriteButtonComponent nextLevel, upgradeCar, exitButton;
+  late Sprite nextLevelImage, upgradeImage, gotoHome;
 
   CarPoolGame(
       {required this.tileName,
@@ -175,6 +176,31 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           await Future.delayed(
             const Duration(seconds: 3),
             () {
+              nextLevel = SpriteButtonComponent(
+                button: nextLevelImage,
+                position: Vector2(400, 250),
+                size: Vector2(50, 50),
+                onPressed: () {
+                  debugPrint("Next level Pressed");
+                },
+              );
+              upgradeCar = SpriteButtonComponent(
+                button: upgradeImage,
+                position: Vector2(300, 250),
+                size: Vector2(50, 50),
+                onPressed: () {
+                  debugPrint("Upgrade Car Pressed");
+                },
+              );
+              exitButton = SpriteButtonComponent(
+                button: gotoHome,
+                position: Vector2(700, 320),
+                size: Vector2(50, 50),
+                onPressed: () {
+                  debugPrint("Exit Button Pressed");
+                },
+              );
+              addAll([nextLevel, upgradeCar, exitButton]);
               if (_timer.isActive) {
                 _timer.cancel();
                 Flame.device.setPortrait();
@@ -254,35 +280,10 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     }
 
     // Creating a sprite button
-    Sprite nextLevelImage = await game.loadSprite(Global.nextLevelButtonImage);
-    Sprite upgradeImage = await game.loadSprite(Global.upgradeButtonImage);
-    Sprite gotoHome = await game.loadSprite(Global.goToHomeImage);
+    nextLevelImage = await game.loadSprite(Global.nextLevelButtonImage);
+    upgradeImage = await game.loadSprite(Global.upgradeButtonImage);
+    gotoHome = await game.loadSprite(Global.goToHomeImage);
 
-    nextLevel = SpriteButtonComponent(
-      button: nextLevelImage,
-      position: Vector2(400, 250),
-      size: Vector2(50, 50),
-      onPressed: () {
-        debugPrint("Next level Pressed");
-      },
-    );
-    upgradeCar = SpriteButtonComponent(
-      button: upgradeImage,
-      position: Vector2(300, 250),
-      size: Vector2(50, 50),
-      onPressed: () {
-        debugPrint("Upgrade Car Pressed");
-      },
-    );
-    exitButton = SpriteButtonComponent(
-      button: gotoHome,
-      position: Vector2(700, 320),
-      size: Vector2(50, 50),
-      onPressed: () {
-        debugPrint("Exit Button Pressed");
-      },
-    );
-    addAll([nextLevel, upgradeCar, exitButton]);
     return super.onLoad();
   }
 
