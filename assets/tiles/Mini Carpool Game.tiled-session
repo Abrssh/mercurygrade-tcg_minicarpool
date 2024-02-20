@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Level 3.tmx",
+    "activeFile": "testMap3.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric",
-        "."
+        ".",
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -16,6 +16,10 @@
             "scaleInEditor": 1
         },
         "AnimationSheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "Aristocrate-F-01.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 5.5
         },
@@ -73,8 +77,8 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 383.5,
-                "y": 192.5
+                "x": 381.5,
+                "y": 191
             }
         },
         "Level 3.tmx": {
@@ -85,8 +89,8 @@
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 380.5,
-                "y": 113
+                "x": 370.5,
+                "y": 184
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
@@ -274,6 +278,10 @@
             "scaleInDock": 3,
             "scaleInEditor": 1
         },
+        "sr2b5b1ab47a4aws3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.25
+        },
         "sr2e5c2145371aws3.tsx": {
             "scaleInDock": 0.33,
             "scaleInEditor": 0.33
@@ -302,8 +310,8 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 383.5,
-                "y": 191.5
+                "x": 381.5,
+                "y": 190
             }
         }
     },
@@ -322,28 +330,29 @@
         "testMap3.tmx",
         "Level 2.tmx",
         "Level 3.tmx",
-        "Roads_and_tracks_SpriteSheet.tsx"
+        "Roads_and_tracks_SpriteSheet.tsx",
+        "Aristocrate-F-01.tsx"
     ],
     "project": "Mini Carpool Game.tiled-project",
     "recentFiles": [
-        "testMap3.tmx",
-        "Level 2.tmx",
+        "Aristocrate-F-01.tsx",
         "Roads_and_tracks_SpriteSheet.tsx",
         "Level 3.tmx",
+        "Level 2.tmx",
+        "testMap3.tmx",
+        "sr2b5b1ab47a4aws3.tsx",
         "Roads_and_tracks_SpriteSheet 2.tsx",
         "roads2W.tsx",
         "sr2e5c2145371aws3.tsx",
         "Tilemap32x32_down_environment.tsx",
         "Sign Attention.tsx",
-        "minitree32x48.tsx",
-        "MegaPixelArt32x32pxIcons_SpriteSheet.tsx",
-        "hydrant 32x32.tsx"
+        "minitree32x48.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 32,
-        "width": 32
+        "width": 24
     },
     "tileset.type": 0
 }

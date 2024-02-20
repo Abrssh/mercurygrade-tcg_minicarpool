@@ -78,13 +78,14 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                     height: deviceHeight * 0.01,
                   ),
                   SizedBox(
-                    height: deviceHeight * 0.3,
+                    height: deviceHeight * 0.4,
                     width: deviceWidth * 0.8,
                     child: Text(
                       AppLocalizations.of(context)!.detailedExplanationtext,
                       style: TextStyle(
-                          fontWeight: FontWeight.w100,
-                          fontSize: deviceWidth * 0.05),
+                        fontWeight: FontWeight.w400,
+                        fontSize: deviceWidth * 0.04,
+                      ),
                     ),
                   ),
                   SizedBox(

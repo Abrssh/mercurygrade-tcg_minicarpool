@@ -44,6 +44,7 @@ class LevelCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     levelName,
@@ -59,7 +60,7 @@ class LevelCard extends StatelessWidget {
                     levelDetails,
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
-                      fontSize: deviceWidth * 0.05,
+                      fontSize: deviceWidth * 0.04,
                     ),
                   )
                 ],

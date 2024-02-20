@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:mini_carpoolgame/Game/Actors/carspriteComponent.dart';
 import 'package:mini_carpoolgame/Game/OverlayUI/statUI.dart';
 import 'package:mini_carpoolgame/Game/path_finding.dart';
+import 'package:mini_carpoolgame/Screens/carSelection.dart';
 import 'package:mini_carpoolgame/Screens/homescreen.dart';
+import 'package:mini_carpoolgame/Screens/levelselectionscreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -37,11 +39,15 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   late final PathFinding pathGraph;
   final double moveSpeed = 200;
   final double yAxisSpriteAdjustment = -62;
-  final double xAxisSpriteAdjustment = -30;
+  // final double xAxisSpriteAdjustment = -30;
+  final double xAxisSpriteAdjustment = -40;
 
-  int emissionInGrams = 0, time = 0;
+  double emissionInGrams = 0;
+  int time = 0;
   late final FirstPassengerComp firstPassengerComp;
   late final SecondPassengerComp secondPassengerComp;
+  // late final SpriteAnimationComponent firstPassengerComp;
+  // late final SpriteAnimationComponent secondPassengerComp;
   bool firstPassengerBoarded = false, secondPassengerBoarded = false;
   bool firstDestinationArrived = false, secondDestinationArrived = false;
 
@@ -101,7 +107,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             statUIOverlay = StatUIOverlay(
                 buildContext: buildContext!,
                 destinationNum: destinationArrivedNum,
-                emissionNum: emissionInGrams.toString(),
+                emissionNum: emissionInGrams.toStringAsFixed(2),
                 passengerNum: passengerNum,
                 emissionLimit: emissionInGramsLimit.toString(),
                 time: time.toString());
@@ -174,7 +180,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
               success: true);
           add(gameMessageUIOverlay);
           await Future.delayed(
-            const Duration(seconds: 3),
+            const Duration(milliseconds: 1500),
             () {
               nextLevel = SpriteButtonComponent(
                 button: nextLevelImage,
@@ -182,6 +188,12 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
                 size: Vector2(50, 50),
                 onPressed: () {
                   debugPrint("Next level Pressed");
+                  Flame.device.setPortrait();
+                  Navigator.pushReplacement(
+                      game.buildContext!,
+                      MaterialPageRoute(
+                        builder: (context) => const LevelSelectionScreen(),
+                      ));
                 },
               );
               upgradeCar = SpriteButtonComponent(
@@ -190,26 +202,18 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
                 size: Vector2(50, 50),
                 onPressed: () {
                   debugPrint("Upgrade Car Pressed");
+                  Flame.device.setPortrait();
+                  Navigator.pushReplacement(
+                      game.buildContext!,
+                      MaterialPageRoute(
+                        builder: (context) => const CarSelectionScreen(),
+                      ));
                 },
               );
-              exitButton = SpriteButtonComponent(
-                button: gotoHome,
-                position: Vector2(700, 320),
-                size: Vector2(50, 50),
-                onPressed: () {
-                  debugPrint("Exit Button Pressed");
-                },
-              );
-              addAll([nextLevel, upgradeCar, exitButton]);
               if (_timer.isActive) {
                 _timer.cancel();
-                Flame.device.setPortrait();
-                Navigator.pushReplacement(
-                    game.buildContext!,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ));
               }
+              addAll([nextLevel, upgradeCar]);
             },
           );
         } else {
@@ -220,7 +224,13 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     debugPrint("Game Started");
 
     // Loading Images and Tiles
-    Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
+    Sprite carSprite;
+    if (HomeScreen.carSelected == 1) {
+      carSprite = await game.loadSprite(Global.carPlayerSprite2);
+    } else {
+      carSprite = await game.loadSprite(Global.carPlayerSprite3);
+    }
+    // Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
     Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
     Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
 
@@ -251,6 +261,17 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         playerSpawnPoint.x + xAxisSpriteAdjustment,
         playerSpawnPoint.y + yAxisSpriteAdjustment,
         carSprite);
+    // firstPassengerComp = SpriteAnimationComponent(
+    //     position:
+    //         Vector2(spawnPointsPassengers[0].x, spawnPointsPassengers[0].y),
+    //     animation: _spriteAnimationCreation(
+    //         Global.passengerNunSprite, 6, 0.05, 48 * 64));
+    // secondPassengerComp = SpriteAnimationComponent(
+    // position:
+    //     Vector2(spawnPointsPassengers[1].x, spawnPointsPassengers[1].y),
+    // animation: _spriteAnimationCreation(
+    //     Global.passengerNunSpriteblue, 6, 0.05, 48 * 64));
+
     firstPassengerComp = FirstPassengerComp(
         spawnPointsPassengers[0].x, spawnPointsPassengers[0].y, firPassSpr);
     secondPassengerComp = SecondPassengerComp(
@@ -283,7 +304,24 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     nextLevelImage = await game.loadSprite(Global.nextLevelButtonImage);
     upgradeImage = await game.loadSprite(Global.upgradeButtonImage);
     gotoHome = await game.loadSprite(Global.goToHomeImage);
-
+    exitButton = SpriteButtonComponent(
+      button: gotoHome,
+      position: Vector2(700, 320),
+      size: Vector2(50, 50),
+      onPressed: () {
+        debugPrint("Exit Button Pressed");
+        if (_timer.isActive) {
+          _timer.cancel();
+        }
+        Flame.device.setPortrait();
+        Navigator.pushReplacement(
+            game.buildContext!,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ));
+      },
+    );
+    add(exitButton);
     return super.onLoad();
   }
 
@@ -306,7 +344,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       destinationReached = false;
     } else {}
     if (!firstTime) {
-      statUIOverlay.emissionNum = emissionInGrams.toString();
+      statUIOverlay.emissionNum = emissionInGrams.toStringAsFixed(2);
       statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
       statUIOverlay.passengerNum = passengerNum;
       statUIOverlay.destinationNum = destinationArrivedNum;
@@ -331,11 +369,6 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     }
     super.update(dt);
   }
-
-  // @override
-  // void handleTapDown(TapDownDetails details) {
-  //   super.handleTapDown(details);
-  // }
 
   // implments the process of moving the car to the desired location
   void moveTowards(double dt) {
@@ -433,7 +466,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
 
       // identifies current node using car position and destination node using touch input
       for (var touchPoint in touchPoints) {
-        if ((touchposition - touchPoint).length < 20) {
+        if ((touchposition - touchPoint).length < 30) {
           debugPrint("Touch around touchpoints");
           // Update sprite position based on touch
           // carSpriteComponent.x = details.localPosition.dx - 35;
@@ -472,7 +505,14 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             returnTheBestPath(cNode, destinationNode);
         // debugPrint("Map: ${revertPoints.toString()}");
         List<Vector2> nodesReturned = returnedMap[0];
-        emissionInGrams += int.parse(returnedMap[1].toString());
+        // Applies proper Emission rate
+        if (HomeScreen.carSelected == 1) {
+          emissionInGrams += int.parse(returnedMap[1].toString());
+        } else {
+          int emiss = int.parse(returnedMap[1].toString());
+          double dbEmiss = emiss / 2;
+          emissionInGrams += dbEmiss;
+        }
         // debugPrint("Emission: ${emissionInGrams.toString()} ${returnedMap[1]}");
         // debugPrint("Path ${nodesReturned.join(" -> ")}");
         // debugPrint("TouchPoints ${touchPoints.join(" -> ")}");
@@ -685,5 +725,15 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         break;
       default:
     }
+  }
+
+  SpriteAnimation _spriteAnimationCreation(
+      String fileName, int numberOfSprites, stepTime, double textureSize) {
+    return SpriteAnimation.fromFrameData(
+        game.images.fromCache(fileName),
+        SpriteAnimationData.sequenced(
+            amount: numberOfSprites,
+            stepTime: stepTime,
+            textureSize: Vector2.all(textureSize)));
   }
 }

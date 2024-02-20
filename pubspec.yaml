@@ -25,6 +25,7 @@ dependencies:
   flutter_localization: ^0.2.0
   add_to_google_wallet: ^0.0.3
   uuid: ^4.3.3
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
