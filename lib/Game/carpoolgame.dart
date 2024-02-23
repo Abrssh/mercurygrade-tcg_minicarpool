@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:async' as tm;
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -36,7 +37,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   // indicate which node is the current destination
   int currentNode = 0;
 
-  late final PathFinding pathGraph;
+  late PathFinding pathGraph;
   final double moveSpeed = 200;
   final double yAxisSpriteAdjustment = -62;
   // final double xAxisSpriteAdjustment = -30;
@@ -76,9 +77,17 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   late SpriteButtonComponent nextLevel, upgradeCar, exitButton;
   late Sprite nextLevelImage, upgradeImage, gotoHome;
 
+  // Event Simulation variables
+  List<Vector2> eventSpawnPoints = [];
+  // bool roadBlockExist = false;
+  int roadBlockNumber = 0, roadBlockNumber2 = 0, moveCounter = 0;
+  late CopCarComp copCarComponent, copCarComp2;
+  final List<List<List<int>>> edgeToBeRemoved;
+
   CarPoolGame(
       {required this.tileName,
       required this.level,
+      required this.edgeToBeRemoved,
       required this.emissionInGramsLimit});
 
   @override
@@ -142,6 +151,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
                         game: CarPoolGame(
                             emissionInGramsLimit: emissionInGramsLimit,
                             tileName: tileName,
+                            edgeToBeRemoved: edgeToBeRemoved,
                             level: level),
                         overlayBuilderMap: {
                           'Overlay': (BuildContext context, CarPoolGame game) {
@@ -233,6 +243,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     // Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
     Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
     Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
+    Sprite copCarSpr = await game.loadSprite(Global.carPlayerSprite);
 
     await images.loadAllImages();
     debugPrint("Images Loaded: ${images.toString()} $tileName");
@@ -241,6 +252,10 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     // Gets allowed movement points for the touch input and spawn points
     final objectLayer = firstLevel.tileMap.getLayer<ObjectGroup>("mov lay");
     final spawnLayer = firstLevel.tileMap.getLayer<ObjectGroup>("spawnPoints");
+
+    // Add spawn points where road bloackage can happen
+    final eventPoints =
+        firstLevel.tileMap.getLayer<ObjectGroup>("roadBlockPoints");
     for (var object in objectLayer!.objects) {
       // debugPrint(
       //     "Height: ${object.height} Width: ${object.width} ${Global.carPlayerSprite}");
@@ -255,7 +270,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         destinationSpawnPoints.add(Vector2(spawnPoint.x, spawnPoint.y));
       }
     }
-
+    for (var eventPoint in eventPoints!.objects) {
+      eventSpawnPoints.add(Vector2(eventPoint.x, eventPoint.y));
+    }
     // creating and spawning car at a specific location
     carSpriteComponent = CarSpriteComponent(
         playerSpawnPoint.x + xAxisSpriteAdjustment,
@@ -322,11 +339,42 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       },
     );
     add(exitButton);
+
+    // Creating road block
+    if (eventSpawnPoints.isNotEmpty) {
+      Vector2 firstRoadBlockPos =
+          Vector2(eventSpawnPoints[0].x - 20, eventSpawnPoints[0].y);
+      Vector2 secondRoadBlockPos =
+          Vector2(eventSpawnPoints[1].x - 20, eventSpawnPoints[1].y - 55);
+      copCarComponent = CopCarComp(firstRoadBlockPos.x + xAxisSpriteAdjustment,
+          firstRoadBlockPos.y + yAxisSpriteAdjustment, copCarSpr);
+      copCarComp2 =
+          CopCarComp(secondRoadBlockPos.x, secondRoadBlockPos.y, copCarSpr);
+      addAll([copCarComponent, copCarComp2]);
+      copCarComponent.makeTransparent();
+      copCarComp2.makeTransparent();
+      Random random = Random();
+      roadBlockNumber = random.nextInt(5);
+      roadBlockNumber2 = random.nextInt(5);
+      // randNum used to determine if the event will happen
+      // or not while roadBlockNumber determines when the event will happen
+      int randNum = random.nextInt(10);
+      int randNum2 = random.nextInt(10);
+      if (randNum >= 5) {
+        roadBlockNumber = 40;
+      }
+      if (randNum2 >= 5) {
+        roadBlockNumber2 = 40;
+      }
+      debugPrint("RBnum: $roadBlockNumber $roadBlockNumber2 $eventSpawnPoints");
+    }
+    debugPrint("Edge to be Removed: $edgeToBeRemoved");
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
+    debugPrint("MoveCo: $moveCounter $roadBlockNumber $roadBlockNumber2");
     // reversePassengerBoarded(1, firstPassengerComp);
     // debugPrint(
     //     "Fi: ${firstPassBoar.toString()} ${seconPassBoar.toString()} ${firstPassArr} $secondPassArr");
@@ -366,6 +414,27 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       dirX -= 20;
       newVelocity = Vector2(dirX, dirY);
       secondPassengerComp.position += newVelocity * dt;
+    }
+
+    if (moveCounter >= roadBlockNumber && copCarComponent.opacity < 1) {
+      copCarComponent.makeOpaque();
+      for (var edge in edgeToBeRemoved[0]) {
+        pathGraph.removeEdge(edge[0], edge[1]);
+      }
+      debugPrint("Graph: ${pathGraph.edgeWeights}");
+    } else if (moveCounter < roadBlockNumber && copCarComponent.opacity == 1) {
+      copCarComponent.makeTransparent();
+    }
+    if (moveCounter >= roadBlockNumber2 && copCarComp2.opacity < 1) {
+      copCarComp2.makeOpaque();
+      debugPrint("Graph bef: ${pathGraph.edgeWeights}");
+      for (var edge in edgeToBeRemoved[1]) {
+        // debugPrint("E: ${edge[0]} ${edge[1]}");
+        pathGraph.removeEdge(edge[0], edge[1]);
+      }
+      debugPrint("Graph2: ${pathGraph.edgeWeights}");
+    } else if (moveCounter < roadBlockNumber2 && copCarComp2.opacity == 1) {
+      copCarComp2.makeTransparent();
     }
     super.update(dt);
   }
@@ -494,40 +563,45 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           }
         }
 
-        // debugPrint("Cn: ${cNode.toString()} ${destinationNode.toString()}");
-        destinationReached = false;
-        finalDestinationReached = false;
-        // Add revert data
-        List<int> revertData = [destinationNode, cNode];
-        revertPoints.add(revertData);
-        currentRevertNum++;
-        Map<int, dynamic> returnedMap =
-            returnTheBestPath(cNode, destinationNode);
-        // debugPrint("Map: ${revertPoints.toString()}");
-        List<Vector2> nodesReturned = returnedMap[0];
-        // Applies proper Emission rate
-        if (HomeScreen.carSelected == 1) {
-          emissionInGrams += int.parse(returnedMap[1].toString());
+        if (pathGraph.areNodesConnected(cNode, destinationNode)) {
+          // debugPrint("Cn: ${cNode.toString()} ${destinationNode.toString()}");
+          destinationReached = false;
+          finalDestinationReached = false;
+          // Add revert data
+          List<int> revertData = [destinationNode, cNode];
+          revertPoints.add(revertData);
+          currentRevertNum++;
+          Map<int, dynamic> returnedMap =
+              returnTheBestPath(cNode, destinationNode);
+          // debugPrint("Map: ${revertPoints.toString()}");
+          List<Vector2> nodesReturned = returnedMap[0];
+          // Applies proper Emission rate
+          if (HomeScreen.carSelected == 1) {
+            emissionInGrams += int.parse(returnedMap[1].toString());
+          } else {
+            int emiss = int.parse(returnedMap[1].toString());
+            double dbEmiss = emiss / 2;
+            emissionInGrams += dbEmiss;
+          }
+          moveCounter++;
+          // debugPrint("Emission: ${emissionInGrams.toString()} ${returnedMap[1]}");
+          // debugPrint("Path ${nodesReturned.join(" -> ")}");
+          // debugPrint("TouchPoints ${touchPoints.join(" -> ")}");
+          totalNodesInPath.addAll(nodesReturned);
+          // Adds Emission
+          // emissionInGrams += totalNodesInPath.length - 1;
+          destination = Vector2(
+              totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
+          // finalDestination = Vector2(
+          //     touchPoints[destinationNode].x, touchPoints[destinationNode].y);
+          finalDestination = Vector2(
+              totalNodesInPath[totalNodesInPath.length - 1].x,
+              totalNodesInPath[totalNodesInPath.length - 1].y);
+          velocity = (destination - carSpriteComponent.position).normalized() *
+              moveSpeed;
         } else {
-          int emiss = int.parse(returnedMap[1].toString());
-          double dbEmiss = emiss / 2;
-          emissionInGrams += dbEmiss;
+          debugPrint("Not connected: $cNode $destinationNode");
         }
-        // debugPrint("Emission: ${emissionInGrams.toString()} ${returnedMap[1]}");
-        // debugPrint("Path ${nodesReturned.join(" -> ")}");
-        // debugPrint("TouchPoints ${touchPoints.join(" -> ")}");
-        totalNodesInPath.addAll(nodesReturned);
-        // Adds Emission
-        // emissionInGrams += totalNodesInPath.length - 1;
-        destination = Vector2(
-            totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
-        // finalDestination = Vector2(
-        //     touchPoints[destinationNode].x, touchPoints[destinationNode].y);
-        finalDestination = Vector2(
-            totalNodesInPath[totalNodesInPath.length - 1].x,
-            totalNodesInPath[totalNodesInPath.length - 1].y);
-        velocity = (destination - carSpriteComponent.position).normalized() *
-            moveSpeed;
       }
     }
   }
@@ -540,6 +614,22 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     if (currentTime.difference(_lastTapTime) < _doubleTapThreshold) {
       if (finalDestinationReached) {
         if (currentRevertNum > 0) {
+          moveCounter--;
+          if ((moveCounter < roadBlockNumber && roadBlockNumber != 40) ||
+              (moveCounter < roadBlockNumber2 && roadBlockNumber2 != 40)) {
+            // Restore the graph
+            switch (level) {
+              case 1:
+                pathGraph = addLevel1PathGraph();
+              case 2:
+                pathGraph = addLevel2PathGraph();
+              case 3:
+                pathGraph = addLevel3PathGraph();
+                break;
+              default:
+            }
+            debugPrint("Restored");
+          }
           if (currentRevertNum == firstPassBoar) {
             reversePassengerBoarded(1);
             firstPassBoar = 0;
@@ -564,7 +654,13 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
               revertPoints[currentRevertNum][0],
               revertPoints[currentRevertNum][1]);
           List<Vector2> nodesReturned = returnedMap[0];
-          emissionInGrams -= int.parse(returnedMap[1].toString());
+          if (HomeScreen.carSelected == 1) {
+            emissionInGrams -= int.parse(returnedMap[1].toString());
+          } else {
+            int emiss = int.parse(returnedMap[1].toString());
+            double dbEmiss = emiss / 2;
+            emissionInGrams -= dbEmiss;
+          }
           totalNodesInPath.addAll(nodesReturned);
           destination = Vector2(
               totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
@@ -735,5 +831,18 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
             amount: numberOfSprites,
             stepTime: stepTime,
             textureSize: Vector2.all(textureSize)));
+  }
+
+  // Remove the path from the graph so that the road is blocked
+  void removeEdge(int u, int v) {
+    // Remove v from the adjacency list of u
+    pathGraph.adjacencyList[u]?.remove(v);
+
+    // Remove u from the adjacency list of v
+    pathGraph.adjacencyList[v]?.remove(u);
+
+    // Remove the edge weights
+    pathGraph.edgeWeights[u]?.remove(v);
+    pathGraph.edgeWeights[v]?.remove(u);
   }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="80">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="82">
  <tileset firstgid="1" source="Tilemap32x32_down_environment.tsx"/>
  <tileset firstgid="57" source="hydrant 32x32.tsx"/>
  <tileset firstgid="58" source="MegaPixelArt32x32pxIcons_SpriteSheet.tsx"/>
@@ -52,6 +52,14 @@
    <point/>
   </object>
   <object id="79" type="destination" x="623" y="209">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="roadBlockPoints">
+  <object id="80" x="145" y="149">
+   <point/>
+  </object>
+  <object id="81" x="50" y="342">
    <point/>
   </object>
  </objectgroup>

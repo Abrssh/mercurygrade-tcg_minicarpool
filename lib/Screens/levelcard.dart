@@ -10,6 +10,8 @@ class LevelCard extends StatelessWidget {
   final String tileName;
   final int emissionInGramsLimit, level;
 
+  final List<List<List<int>>> roadsBlocked;
+
   const LevelCard(
       {super.key,
       required this.tileName,
@@ -17,6 +19,7 @@ class LevelCard extends StatelessWidget {
       required this.level,
       required this.levelName,
       required this.levelDetails,
+      required this.roadsBlocked,
       required this.imagePath});
 
   @override
@@ -74,6 +77,7 @@ class LevelCard extends StatelessWidget {
                         builder: (context) => GameDetailScreen(
                             level: level,
                             emissionInGramsLimit: emissionInGramsLimit,
+                            roadsBlocked: roadsBlocked,
                             tileName: tileName),
                       ));
                 },

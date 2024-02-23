@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="33">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="37">
  <tileset firstgid="1" source="Tilemap32x32_down_environment.tsx"/>
  <tileset firstgid="57" source="minitree32x48.tsx"/>
  <tileset firstgid="58" source="MegaPixelArt32x32pxIcons_SpriteSheet.tsx"/>
@@ -61,7 +61,7 @@
   <object id="24" name="22" x="528" y="337"/>
   <object id="25" name="23" x="529" y="243"/>
  </objectgroup>
- <objectgroup id="4" name="spawnPoints">
+ <objectgroup id="4" name="spawnPoints" visible="0">
   <object id="26" type="player" x="339" y="244">
    <point/>
   </object>
@@ -75,6 +75,14 @@
    <point/>
   </object>
   <object id="31" type="destination" x="47" y="144">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="roadBlockPoints">
+  <object id="33" x="146" y="245">
+   <point/>
+  </object>
+  <object id="34" x="337" y="146">
    <point/>
   </object>
  </objectgroup>

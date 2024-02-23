@@ -1,4 +1,5 @@
 import 'package:collection/priority_queue.dart';
+import 'package:flutter/material.dart';
 
 class PathFinding {
   // Variables needed to construct the graph
@@ -89,7 +90,7 @@ class PathFinding {
     }
     path.add(start);
     // debugPrint("SAt: T ${edgeWeights[path[1]]![path[0]].toString()}");
-    // debugPrint("SAt: ${path.reversed.toList().join(" => ")}");
+    debugPrint("SAt: ${path.reversed.toList().join(" => ")}");
     return path.reversed.toList();
   }
 
@@ -102,5 +103,46 @@ class PathFinding {
     // debugPrint("CE: ${paths.join(" => ")} pl ${paths.length}");
     // debugPrint("CE: ${emissions.toString()}");
     return emissions;
+  }
+
+  // Remove the path from the graph so that the road is blocked
+  void removeEdge(int u, int v) {
+    adjacencyList[u]?.remove(v);
+    adjacencyList[v]?.remove(u);
+
+    edgeWeights[u]?.remove(v);
+    edgeWeights[v]?.remove(u);
+
+    // Adjust node numbers if needed
+    adjacencyList[u]?.forEach((neighbor) {
+      edgeWeights[u]![neighbor] = edgeWeights[u]![neighbor]!;
+    });
+
+    adjacencyList[v]?.forEach((neighbor) {
+      edgeWeights[v]![neighbor] = edgeWeights[v]![neighbor]!;
+    });
+
+    // Remove v from the adjacency list of u
+    adjacencyList[u]?.remove(v);
+
+    // Remove u from the adjacency list of v
+    adjacencyList[v]?.remove(u);
+  }
+
+  bool areNodesConnected(int u, int v) {
+    final visited = List<bool>.filled(numberOfNodes, false);
+    dfs(u, visited);
+
+    // Check if the destination node is visited after DFS from the source node
+    return visited[v];
+  }
+
+  void dfs(int start, List<bool> visited) {
+    if (visited[start]) return;
+
+    visited[start] = true;
+    for (final neighbor in adjacencyList[start]!) {
+      dfs(neighbor, visited);
+    }
   }
 }

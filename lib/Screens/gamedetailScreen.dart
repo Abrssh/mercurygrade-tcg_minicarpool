@@ -10,9 +10,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class GameDetailScreen extends StatefulWidget {
   final String tileName;
   final int emissionInGramsLimit, level;
+  final List<List<List<int>>> roadsBlocked;
   const GameDetailScreen(
       {super.key,
       required this.emissionInGramsLimit,
+      required this.roadsBlocked,
       required this.tileName,
       required this.level});
 
@@ -105,6 +107,7 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                                           emissionInGramsLimit:
                                               widget.emissionInGramsLimit,
                                           tileName: widget.tileName,
+                                          edgeToBeRemoved: widget.roadsBlocked,
                                           level: widget.level),
                                       overlayBuilderMap: {
                                         'Overlay': (BuildContext context,

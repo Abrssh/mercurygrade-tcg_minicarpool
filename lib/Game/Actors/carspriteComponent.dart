@@ -55,3 +55,12 @@ class SecondPassengerComp extends SpriteComponent {
     this.sprite = sprite;
   }
 }
+
+class CopCarComp extends SpriteComponent {
+  final double speed = 200.0;
+  CopCarComp(double x, double y, Sprite sprite) : super() {
+    this.x = x;
+    this.y = y;
+    this.sprite = sprite;
+  }
+}

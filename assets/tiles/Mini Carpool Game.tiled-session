@@ -6,8 +6,8 @@
     "activeFile": "testMap3.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        ".",
-        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric"
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -71,26 +71,28 @@
         },
         "Level 2.tmx": {
             "expandedObjectLayers": [
+                4,
                 3,
-                4
+                5
             ],
             "scale": 1,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 381.5,
+                "x": 382.5,
                 "y": 191
             }
         },
         "Level 3.tmx": {
             "expandedObjectLayers": [
+                4,
                 3,
-                4
+                5
             ],
             "scale": 1,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 370.5,
-                "y": 184
+                "x": 382.5,
+                "y": 191
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
@@ -304,14 +306,14 @@
         },
         "testMap3.tmx": {
             "expandedObjectLayers": [
-                6,
-                4
+                4,
+                6
             ],
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 381.5,
-                "y": 190
+                "x": 379.5,
+                "y": 150
             }
         }
     },
