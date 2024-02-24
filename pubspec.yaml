@@ -48,5 +48,7 @@ flutter:
       - assets/images/gameAssets/Tilemaps & Additive Env/
       - assets/images/gameAssets/Vegetation/
       - assets/images/gameAssets/Road Signs/
+      - assets/images/gameAssets/Virtual Guy/
+      - assets/images/gameAssets/Pink Man/
       - assets/images/UI Assets/
     # - images/a_dot_ham.jpeg

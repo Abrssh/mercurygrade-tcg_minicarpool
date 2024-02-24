@@ -6,6 +6,9 @@
  <tileset firstgid="562" source="cop-big-car-76x76.tsx"/>
  <tileset firstgid="563" source="minitree32x48.tsx"/>
  <tileset firstgid="564" source="Sign Attention.tsx"/>
+ <tileset firstgid="565" source="Office Building.tsx"/>
+ <tileset firstgid="566" source="building1.tsx"/>
+ <tileset firstgid="566" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="24" height="12">
   <data encoding="csv">
 5,6,7,5,6,7,5,6,7,5,6,7,5,6,7,5,6,7,5,6,7,5,6,7,
@@ -29,8 +32,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,
 0,563,0,0,12,0,0,12,0,0,12,0,0,0,0,0,12,0,0,563,0,0,0,0,
-0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,58,0,1,0,0,0,0,0,0,59,0,0,0,0,
+0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,565,0,0,1,0,0,0,0,0,565,0,0,0,0,0,
 0,563,0,0,0,0,0,0,0,0,12,0,0,12,0,0,12,0,0,12,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -55,7 +58,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="7" name="roadBlockPoints">
+ <objectgroup id="7" name="roadBlockPoints" visible="0">
   <object id="80" x="145" y="149">
    <point/>
   </object>

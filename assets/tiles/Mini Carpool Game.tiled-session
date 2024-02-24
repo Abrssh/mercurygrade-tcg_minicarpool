@@ -6,8 +6,8 @@
     "activeFile": "testMap3.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric",
-        "."
+        ".",
+        "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/game_assets/Isometric"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -69,39 +69,48 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "First Asset pack.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "Level 2.tmx": {
             "expandedObjectLayers": [
-                4,
                 3,
+                4,
                 5
             ],
             "scale": 1,
-            "selectedLayer": 4,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 382.5,
-                "y": 191
+                "x": 384.5,
+                "y": 192
             }
         },
         "Level 3.tmx": {
             "expandedObjectLayers": [
-                4,
                 3,
+                4,
                 5
             ],
             "scale": 1,
-            "selectedLayer": 4,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 382.5,
-                "y": 191
+                "y": 190
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "NPC1 (2).tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "Office Building.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         },
         "Roads_and_tracks_Sprite1heet.tsx": {
             "dynamicWrapping": true,
@@ -138,9 +147,18 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "building1.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
         "car_black_1.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "castles_Sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         },
         "cop-big-car-76x76.tsx": {
             "dynamicWrapping": false,
@@ -184,7 +202,16 @@
                 "y": 398
             }
         },
+        "orange hq01.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.5,
+            "scaleInEditor": 4
+        },
         "pickup 01a.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "pixel city.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -307,14 +334,24 @@
         "testMap3.tmx": {
             "expandedObjectLayers": [
                 4,
+                7,
                 6
             ],
             "scale": 1,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 379.5,
-                "y": 150
+                "x": 408.5,
+                "y": 197
             }
+        },
+        "tiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "town.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         }
     },
     "last.externalTilesetPath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets",
@@ -332,29 +369,29 @@
         "testMap3.tmx",
         "Level 2.tmx",
         "Level 3.tmx",
-        "Roads_and_tracks_SpriteSheet.tsx",
-        "Aristocrate-F-01.tsx"
+        "tiles.tsx",
+        "Office Building.tsx"
     ],
     "project": "Mini Carpool Game.tiled-project",
     "recentFiles": [
-        "Aristocrate-F-01.tsx",
-        "Roads_and_tracks_SpriteSheet.tsx",
+        "Office Building.tsx",
+        "tiles.tsx",
         "Level 3.tmx",
         "Level 2.tmx",
         "testMap3.tmx",
-        "sr2b5b1ab47a4aws3.tsx",
-        "Roads_and_tracks_SpriteSheet 2.tsx",
-        "roads2W.tsx",
-        "sr2e5c2145371aws3.tsx",
-        "Tilemap32x32_down_environment.tsx",
-        "Sign Attention.tsx",
-        "minitree32x48.tsx"
+        "orange hq01.tsx",
+        "building1.tsx",
+        "town.tsx",
+        "castles_Sheet.tsx",
+        "Roads_and_tracks_SpriteSheet.tsx",
+        "Aristocrate-F-01.tsx",
+        "Buildings.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 32,
-        "width": 24
+        "height": 64,
+        "width": 64
     },
     "tileset.type": 0
 }

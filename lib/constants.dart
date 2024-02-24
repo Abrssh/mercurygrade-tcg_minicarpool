@@ -20,4 +20,10 @@ class Global {
   static const String upgradeButtonImage = "gameAssets/Hover@3x.png";
   // static const String goToHomeImage = "gameAssets/Locker@3x.png";
   static const String goToHomeImage = "gameAssets/LevelsDefault@3x.png";
+  static const String virtualGuyIdle =
+      "gameAssets/Virtual Guy/Idle (32x32).png";
+  static const String virtualGuyRunning =
+      "gameAssets/Virtual Guy/Run (32x32).png";
+  static const String pinkManIdle = "gameAssets/Pink Man/Idle (32x32).png";
+  static const String pinkManRunning = "gameAssets/Pink Man/Run (32x32).png";
 }

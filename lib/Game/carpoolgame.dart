@@ -45,8 +45,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
 
   double emissionInGrams = 0;
   int time = 0;
-  late final FirstPassengerComp firstPassengerComp;
-  late final SecondPassengerComp secondPassengerComp;
+  late final PassengerComp firstPassengerComp, secondPassengerComp;
   // late final SpriteAnimationComponent firstPassengerComp;
   // late final SpriteAnimationComponent secondPassengerComp;
   bool firstPassengerBoarded = false, secondPassengerBoarded = false;
@@ -83,6 +82,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   int roadBlockNumber = 0, roadBlockNumber2 = 0, moveCounter = 0;
   late CopCarComp copCarComponent, copCarComp2;
   final List<List<List<int>>> edgeToBeRemoved;
+
+  final double xaxisdestSpawnSpriteAdj = 40;
 
   CarPoolGame(
       {required this.tileName,
@@ -241,8 +242,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       carSprite = await game.loadSprite(Global.carPlayerSprite3);
     }
     // Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
-    Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
-    Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
+    // Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
+    // Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
     Sprite copCarSpr = await game.loadSprite(Global.carPlayerSprite);
 
     await images.loadAllImages();
@@ -289,15 +290,21 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     // animation: _spriteAnimationCreation(
     //     Global.passengerNunSpriteblue, 6, 0.05, 48 * 64));
 
-    firstPassengerComp = FirstPassengerComp(
-        spawnPointsPassengers[0].x, spawnPointsPassengers[0].y, firPassSpr);
-    secondPassengerComp = SecondPassengerComp(
-        spawnPointsPassengers[1].x, spawnPointsPassengers[1].y, secPassSpr);
+    firstPassengerComp = PassengerComp(
+        spawnPointsPassengers[0].x + xaxisdestSpawnSpriteAdj,
+        spawnPointsPassengers[0].y,
+        passengerNum: 1);
+    secondPassengerComp = PassengerComp(
+        spawnPointsPassengers[1].x + xaxisdestSpawnSpriteAdj,
+        spawnPointsPassengers[1].y,
+        passengerNum: 2);
     // increase the size of the passenger
     firstPassengerComp.width = 50;
     firstPassengerComp.height = 50;
     secondPassengerComp.width = 50;
     secondPassengerComp.height = 50;
+    firstPassengerComp.flipHorizontally();
+    secondPassengerComp.flipHorizontally();
     addAll([
       firstLevel,
       carSpriteComponent,
@@ -369,12 +376,14 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       debugPrint("RBnum: $roadBlockNumber $roadBlockNumber2 $eventSpawnPoints");
     }
     debugPrint("Edge to be Removed: $edgeToBeRemoved");
+    debugPrint(
+        "Current Animation: ${firstPassengerComp.current} ${firstPassengerComp.playing}");
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
-    debugPrint("MoveCo: $moveCounter $roadBlockNumber $roadBlockNumber2");
+    // debugPrint("MoveCo: $moveCounter $roadBlockNumber $roadBlockNumber2");
     // reversePassengerBoarded(1, firstPassengerComp);
     // debugPrint(
     //     "Fi: ${firstPassBoar.toString()} ${seconPassBoar.toString()} ${firstPassArr} $secondPassArr");
@@ -493,7 +502,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
               firstPassengerBoarded &&
               !firstDestinationArrived) {
             firstDestinationArrived = true;
-            firstPassengerComp.position.x = carSpriteComponent.position.x;
+            firstPassengerComp.position.x =
+                carSpriteComponent.position.x + xaxisdestSpawnSpriteAdj;
             firstPassengerComp.position.y = carSpriteComponent.position.y;
             passengerDestinationaction(firstPassengerComp, dt, 1);
             firstPassArr = currentRevertNum;
@@ -502,7 +512,8 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
               secondPassengerBoarded &&
               !secondDestinationArrived) {
             secondDestinationArrived = true;
-            secondPassengerComp.position.x = carSpriteComponent.position.x;
+            secondPassengerComp.position.x =
+                carSpriteComponent.position.x + xaxisdestSpawnSpriteAdj;
             secondPassengerComp.position.y = carSpriteComponent.position.y;
             passengerDestinationaction(secondPassengerComp, dt, 2);
             secondPassArr = currentRevertNum;
@@ -771,14 +782,16 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   }
 
   void passengerDestinationaction(
-      SpriteComponent spriteComponent, double dt, int passType) {
+      SpriteAnimationGroupComponent spriteComponent, double dt, int passType) {
     debugPrint("Called ");
     spriteComponent.makeOpaque();
     switch (passType) {
       case 1:
         moveFirstPass = true;
+        firstPassengerComp.changeAnimation();
       case 2:
         moveSecondPass = true;
+        secondPassengerComp.changeAnimation();
         break;
       default:
     }
@@ -800,12 +813,14 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     switch (passType) {
       case 1:
         firstPassengerBoarded = false;
-        firstPassengerComp.position.x = spawnPointsPassengers[0].x;
+        firstPassengerComp.position.x =
+            spawnPointsPassengers[0].x + xaxisdestSpawnSpriteAdj;
         firstPassengerComp.position.y = spawnPointsPassengers[0].y;
         firstPassengerComp.makeOpaque();
       case 2:
         secondPassengerBoarded = false;
-        secondPassengerComp.position.x = spawnPointsPassengers[1].x;
+        secondPassengerComp.position.x =
+            spawnPointsPassengers[1].x + xaxisdestSpawnSpriteAdj;
         secondPassengerComp.position.y = spawnPointsPassengers[1].y;
         secondPassengerComp.makeOpaque();
       default:
@@ -821,28 +836,5 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         break;
       default:
     }
-  }
-
-  SpriteAnimation _spriteAnimationCreation(
-      String fileName, int numberOfSprites, stepTime, double textureSize) {
-    return SpriteAnimation.fromFrameData(
-        game.images.fromCache(fileName),
-        SpriteAnimationData.sequenced(
-            amount: numberOfSprites,
-            stepTime: stepTime,
-            textureSize: Vector2.all(textureSize)));
-  }
-
-  // Remove the path from the graph so that the road is blocked
-  void removeEdge(int u, int v) {
-    // Remove v from the adjacency list of u
-    pathGraph.adjacencyList[u]?.remove(v);
-
-    // Remove u from the adjacency list of v
-    pathGraph.adjacencyList[v]?.remove(u);
-
-    // Remove the edge weights
-    pathGraph.edgeWeights[u]?.remove(v);
-    pathGraph.edgeWeights[v]?.remove(u);
   }
 }
