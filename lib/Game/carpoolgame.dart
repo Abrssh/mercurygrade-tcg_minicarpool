@@ -18,6 +18,8 @@ import 'package:mini_carpoolgame/Screens/levelselectionscreen.dart';
 import 'package:mini_carpoolgame/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+enum PlayerDirection { left, right, up, down }
+
 class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
   late final tm.Timer _timer;
   late final TiledComponent firstLevel;
@@ -235,16 +237,25 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     debugPrint("Game Started");
 
     // Loading Images and Tiles
-    Sprite carSprite;
+    // Sprite carSprite;
+    // Car direction sprite
+    Sprite carDown, carUp, carRight, carLeft;
+    // Loads proper car sprite
     if (HomeScreen.carSelected == 1) {
-      carSprite = await game.loadSprite(Global.carPlayerSprite2);
+      // carSprite = await game.loadSprite(Global.carPlayerSprite2);
+      carDown = await game.loadSprite(Global.gasCarDownSprite);
+      carUp = await game.loadSprite(Global.gasCarUpSprite);
+      carLeft = await game.loadSprite(Global.gasCarLeftSprite);
+      carRight = await game.loadSprite(Global.gasCarRightSprit);
     } else {
-      carSprite = await game.loadSprite(Global.carPlayerSprite3);
+      // carSprite = await game.loadSprite(Global.carPlayerSprite3);
+      carDown = await game.loadSprite(Global.electricCarDownSprite);
+      carUp = await game.loadSprite(Global.electricCarUpSprite);
+      carLeft = await game.loadSprite(Global.electricCarLeftSprite);
+      carRight = await game.loadSprite(Global.electricCarRightSprite);
     }
-    // Sprite carSprite = await game.loadSprite(Global.carPlayerSprite);
-    // Sprite firPassSpr = await game.loadSprite(Global.passenger1Sprite);
-    // Sprite secPassSpr = await game.loadSprite(Global.passenger2Sprite);
-    Sprite copCarSpr = await game.loadSprite(Global.carPlayerSprite);
+    // Sprite copCarSpr = await game.loadSprite(Global.carPlayerSprite);
+    Sprite copCarSpr = await game.loadSprite(Global.roadBlockHorizontalImage);
 
     await images.loadAllImages();
     debugPrint("Images Loaded: ${images.toString()} $tileName");
@@ -277,8 +288,14 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
     // creating and spawning car at a specific location
     carSpriteComponent = CarSpriteComponent(
         playerSpawnPoint.x + xAxisSpriteAdjustment,
-        playerSpawnPoint.y + yAxisSpriteAdjustment,
-        carSprite);
+        playerSpawnPoint.y + yAxisSpriteAdjustment);
+    carSpriteComponent.sprites = {
+      PlayerDirection.up: carUp,
+      PlayerDirection.down: carDown,
+      PlayerDirection.right: carRight,
+      PlayerDirection.left: carLeft
+    };
+    carSpriteComponent.current = PlayerDirection.right;
     // firstPassengerComp = SpriteAnimationComponent(
     //     position:
     //         Vector2(spawnPointsPassengers[0].x, spawnPointsPassengers[0].y),
@@ -299,10 +316,10 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         spawnPointsPassengers[1].y,
         passengerNum: 2);
     // increase the size of the passenger
-    firstPassengerComp.width = 50;
-    firstPassengerComp.height = 50;
-    secondPassengerComp.width = 50;
-    secondPassengerComp.height = 50;
+    firstPassengerComp.width = 40;
+    firstPassengerComp.height = 40;
+    secondPassengerComp.width = 40;
+    secondPassengerComp.height = 40;
     firstPassengerComp.flipHorizontally();
     secondPassengerComp.flipHorizontally();
     addAll([
@@ -353,10 +370,10 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           Vector2(eventSpawnPoints[0].x - 20, eventSpawnPoints[0].y);
       Vector2 secondRoadBlockPos =
           Vector2(eventSpawnPoints[1].x - 20, eventSpawnPoints[1].y - 55);
-      copCarComponent = CopCarComp(firstRoadBlockPos.x + xAxisSpriteAdjustment,
-          firstRoadBlockPos.y + yAxisSpriteAdjustment, copCarSpr);
-      copCarComp2 =
-          CopCarComp(secondRoadBlockPos.x, secondRoadBlockPos.y, copCarSpr);
+      copCarComponent = CopCarComp(
+          firstRoadBlockPos.x - 10, firstRoadBlockPos.y - 30, copCarSpr);
+      copCarComp2 = CopCarComp(
+          secondRoadBlockPos.x - 10, secondRoadBlockPos.y + 20, copCarSpr);
       addAll([copCarComponent, copCarComp2]);
       copCarComponent.makeTransparent();
       copCarComp2.makeTransparent();
@@ -376,8 +393,6 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       debugPrint("RBnum: $roadBlockNumber $roadBlockNumber2 $eventSpawnPoints");
     }
     debugPrint("Edge to be Removed: $edgeToBeRemoved");
-    debugPrint(
-        "Current Animation: ${firstPassengerComp.current} ${firstPassengerComp.playing}");
     return super.onLoad();
   }
 
@@ -398,8 +413,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
       velocity =
           (destination - carSpriteComponent.position).normalized() * moveSpeed;
+      changeCarDirection(carSpriteComponent.position, destination);
       destinationReached = false;
-    } else {}
+    }
     if (!firstTime) {
       statUIOverlay.emissionNum = emissionInGrams.toStringAsFixed(2);
       statUIOverlay.emissionLimit = emissionInGramsLimit.toString();
@@ -420,21 +436,31 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       Vector2 newVelocity;
       double dirX = 0.0;
       double dirY = 0.0;
-      dirX -= 20;
+      if (level == 3) {
+        dirX += 20;
+      } else {
+        dirX -= 20;
+      }
       newVelocity = Vector2(dirX, dirY);
       secondPassengerComp.position += newVelocity * dt;
     }
 
-    if (moveCounter >= roadBlockNumber && copCarComponent.opacity < 1) {
+    if (moveCounter >= roadBlockNumber &&
+        copCarComponent.opacity < 1 &&
+        finalDestinationReached) {
       copCarComponent.makeOpaque();
       for (var edge in edgeToBeRemoved[0]) {
         pathGraph.removeEdge(edge[0], edge[1]);
       }
       debugPrint("Graph: ${pathGraph.edgeWeights}");
-    } else if (moveCounter < roadBlockNumber && copCarComponent.opacity == 1) {
+    } else if (moveCounter < roadBlockNumber &&
+        copCarComponent.opacity == 1 &&
+        finalDestinationReached) {
       copCarComponent.makeTransparent();
     }
-    if (moveCounter >= roadBlockNumber2 && copCarComp2.opacity < 1) {
+    if (moveCounter >= roadBlockNumber2 &&
+        copCarComp2.opacity < 1 &&
+        finalDestinationReached) {
       copCarComp2.makeOpaque();
       debugPrint("Graph bef: ${pathGraph.edgeWeights}");
       for (var edge in edgeToBeRemoved[1]) {
@@ -442,7 +468,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         pathGraph.removeEdge(edge[0], edge[1]);
       }
       debugPrint("Graph2: ${pathGraph.edgeWeights}");
-    } else if (moveCounter < roadBlockNumber2 && copCarComp2.opacity == 1) {
+    } else if (moveCounter < roadBlockNumber2 &&
+        copCarComp2.opacity == 1 &&
+        finalDestinationReached) {
       copCarComp2.makeTransparent();
     }
     super.update(dt);
@@ -608,6 +636,7 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           finalDestination = Vector2(
               totalNodesInPath[totalNodesInPath.length - 1].x,
               totalNodesInPath[totalNodesInPath.length - 1].y);
+          changeCarDirection(carSpriteComponent.position, destination);
           velocity = (destination - carSpriteComponent.position).normalized() *
               moveSpeed;
         } else {
@@ -675,12 +704,12 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
           totalNodesInPath.addAll(nodesReturned);
           destination = Vector2(
               totalNodesInPath[currentNode].x, totalNodesInPath[currentNode].y);
-
           finalDestination = Vector2(
               totalNodesInPath[totalNodesInPath.length - 1].x,
               totalNodesInPath[totalNodesInPath.length - 1].y);
           velocity = (destination - carSpriteComponent.position).normalized() *
               moveSpeed;
+          // changeCarDirection(carSpriteComponent.position, destination);
           revertPoints.removeLast();
         }
       }
@@ -792,6 +821,9 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
       case 2:
         moveSecondPass = true;
         secondPassengerComp.changeAnimation();
+        if (level == 3) {
+          secondPassengerComp.flipHorizontally();
+        }
         break;
       default:
     }
@@ -835,6 +867,23 @@ class CarPoolGame extends FlameGame with HasGameRef<CarPoolGame>, TapCallbacks {
         secondDestinationArrived = false;
         break;
       default:
+    }
+  }
+
+  // identifies which direction the car should face to go to the destination
+  void changeCarDirection(Vector2 currentPosition, Vector2 destination) {
+    // debugPrint("JJk Pos: $currentPosition $destination");
+    if ((currentPosition.x - destination.x) > 10) {
+      carSpriteComponent.current = PlayerDirection.left;
+    }
+    if ((currentPosition.x - destination.x) < -10) {
+      carSpriteComponent.current = PlayerDirection.right;
+    }
+    if ((currentPosition.y - destination.y) > 10) {
+      carSpriteComponent.current = PlayerDirection.up;
+    }
+    if ((currentPosition.y - destination.y) < -10) {
+      carSpriteComponent.current = PlayerDirection.down;
     }
   }
 }

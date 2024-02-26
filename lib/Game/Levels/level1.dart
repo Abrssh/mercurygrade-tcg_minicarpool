@@ -29,7 +29,6 @@ class Level1 extends World with HasGameRef<CarPoolGame>, TapCallbacks {
       touchPoints.add(Vector2(object.x, object.y));
     }
     Sprite sprite = await game.loadSprite(Global.carPlayerSprite);
-    carSpriteComponent = CarSpriteComponent(100, 0, sprite);
     return super.onLoad();
   }
 }

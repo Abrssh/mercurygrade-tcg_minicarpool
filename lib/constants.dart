@@ -7,8 +7,8 @@ class Global {
   static const String level2ImageLoc = "assets/images/UI Assets/level2.png";
   static const String level3ImageLoc = "assets/images/UI Assets/level3.png";
   static const String carPlayerSprite = "gameAssets/cars/cop-big-car-76x76.png";
-  static const String carPlayerSprite2 = "gameAssets/cars/couple-car-76x76.png";
-  static const String carPlayerSprite3 = "gameAssets/cars/mini-car-76x76.png";
+  // static const String carPlayerSprite2 = "gameAssets/cars/couple-car-76x76.png";
+  // static const String carPlayerSprite3 = "gameAssets/cars/mini-car-76x76.png";
   static const String passenger1Sprite =
       "gameAssets/Tilemaps & Additive Env/hydrant 32x32.png";
   static const String passenger2Sprite =
@@ -26,4 +26,24 @@ class Global {
       "gameAssets/Virtual Guy/Run (32x32).png";
   static const String pinkManIdle = "gameAssets/Pink Man/Idle (32x32).png";
   static const String pinkManRunning = "gameAssets/Pink Man/Run (32x32).png";
+  static const String roadBlockHorizontalImage =
+      "gameAssets/Road Signs/roadblock.png";
+  static const String roadBlockVerticalImage =
+      "gameAssets/Road Signs/roadblock_vertical.png";
+  static const String gasCarDownSprite =
+      "gameAssets/cars/couple-car-76x76 down.png";
+  static const String gasCarUpSprite =
+      "gameAssets/cars/couple-car-76x76 Up.png";
+  static const String gasCarLeftSprite =
+      "gameAssets/cars/couple-car-76x76 left.png";
+  static const String gasCarRightSprit =
+      "gameAssets/cars/couple-car-76x76 right.png";
+  static const String electricCarDownSprite =
+      "gameAssets/cars/mini-car-76x76 down.png";
+  static const String electricCarUpSprite =
+      "gameAssets/cars/mini-car-76x76 - up.png";
+  static const String electricCarRightSprite =
+      "gameAssets/cars/mini-car-76x76 right.png";
+  static const String electricCarLeftSprite =
+      "gameAssets/cars/mini-car-76x76 left.png";
 }

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "testMap3.tmx",
+    "activeFile": "Office Building.tsx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         ".",
@@ -76,11 +76,11 @@
         "Level 2.tmx": {
             "expandedObjectLayers": [
                 3,
-                4,
-                5
+                5,
+                4
             ],
             "scale": 1,
-            "selectedLayer": 1,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 384.5,
                 "y": 192
@@ -93,10 +93,10 @@
                 5
             ],
             "scale": 1,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 382.5,
-                "y": 190
+                "x": 383.5,
+                "y": 191
             }
         },
         "MegaPixelArt32x32pxIcons_SpriteSheet.tsx": {
@@ -111,6 +111,10 @@
         "Office Building.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 4
+        },
+        "Roadblock_Horizontal_Anim_52X52.png.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "Roads_and_tracks_Sprite1heet.tsx": {
             "dynamicWrapping": true,
@@ -160,10 +164,19 @@
             "scaleInDock": 1,
             "scaleInEditor": 4
         },
+        "cone.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
         "cop-big-car-76x76.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "destinations.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 16
         },
         "green car.tsx": {
             "scaleInDock": 1,
@@ -333,15 +346,15 @@
         },
         "testMap3.tmx": {
             "expandedObjectLayers": [
-                4,
                 7,
-                6
+                6,
+                4
             ],
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 408.5,
-                "y": 197
+                "x": 384.5,
+                "y": 192
             }
         },
         "tiles.tsx": {
@@ -355,7 +368,7 @@
         }
     },
     "last.externalTilesetPath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/Images/gameAssets",
-    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets",
+    "last.imagePath": "C:/Users/Abrham daniel/Desktop/Mini Carpool/mini_carpoolgame/assets/images/gameAssets/Road Signs",
     "map.fixedSize": true,
     "map.height": 12,
     "map.lastUsedFormat": "tmx",
@@ -370,28 +383,29 @@
         "Level 2.tmx",
         "Level 3.tmx",
         "tiles.tsx",
-        "Office Building.tsx"
+        "Office Building.tsx",
+        "cone.tsx"
     ],
     "project": "Mini Carpool Game.tiled-project",
     "recentFiles": [
-        "Office Building.tsx",
-        "tiles.tsx",
-        "Level 3.tmx",
-        "Level 2.tmx",
         "testMap3.tmx",
+        "Level 2.tmx",
+        "Level 3.tmx",
+        "tiles.tsx",
+        "cone.tsx",
+        "Office Building.tsx",
+        "Roadblock_Horizontal_Anim_52X52.png.tsx",
+        "destinations.tsx",
         "orange hq01.tsx",
         "building1.tsx",
         "town.tsx",
-        "castles_Sheet.tsx",
-        "Roads_and_tracks_SpriteSheet.tsx",
-        "Aristocrate-F-01.tsx",
-        "Buildings.tsx"
+        "castles_Sheet.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 64,
-        "width": 64
+        "height": 16,
+        "width": 12
     },
     "tileset.type": 0
 }
